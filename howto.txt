@@ -1,0 +1,8 @@
+Pour utiliser ce programme, il vous faut python3 d'installer.
+
+Pour lancer le programme veuillez ouvrir un terminal au répertoire contenant les fichiers sources : main, fonctions et convertions et
+tapez la commande "make" ou "make all".
+
+Pour changer de fichier source de la trame ou destination de la trame, veuillez ouvrir le fichier "Makefile" et remplacer http.txt par un autre fichier source ou res.txt par un autre fichier destination (dans ce cas dans les 2 commandes).
+
+pour supprimer le fichier destination créé veuillez tapez la commande "make clean"

@@ -1,0 +1,6 @@
+
+Trame 1 :
+
+	ETHERNET :
+		Adresse Mac Destination : 00:50:05:7d:40:00
+
