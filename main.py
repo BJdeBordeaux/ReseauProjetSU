@@ -42,11 +42,13 @@ for i in range(len(LL)):
 	information_erreur = ""
 	if(not fonctions.formatValideByte(LL[i][-1])):
 		print(LL[i][-1])
-		if convertions.dico_type_erreur.has_key(LL[i][-1]):
+		if LL[i][-1] in convertions.dico_type_erreur:
 			information_erreur = convertions.dico_type_erreur.get(LL[i][-1])
 		else: 
 			information_erreur = "Erreur inconnue"
+		information_erreur += ", interrupture d'analyse."
 		information_erreur += "\n"
+		LL[i].pop()
 
 	position_debut = 0
 	position_fin = 14

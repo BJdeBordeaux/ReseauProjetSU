@@ -45,21 +45,24 @@ def formatValideByte(x):
 def LtoLL(L):
 	LL = []
 	trame_courante = []
-	ignorer_ligne = False
+	ignorer_ligne = False # il y a une erreur et la lecture de cette trame doit etre arretee
 	ignorer_element = False
 	point_darret = 0 # pour voir s'il s'agit d'un octet invalide
+	octet_invalide = False # pour marquer le type d'erreur
 
 	for indice_ligne in range(len(L)):
 		offset_de_la_ligne = L[indice_ligne][0] # qui doit etre offset
 		offset_en_hex = int(offset_de_la_ligne, base = 16)
-		print("indice ligne = " + str(indice_ligne) + ", offset : " + offset_de_la_ligne)
+		# print("indice ligne = " + str(indice_ligne) + ", offset : " + offset_de_la_ligne)
 		if formatValideOffset(offset_de_la_ligne) :
 			if offset_en_hex == 0:
-				LL.append(trame_courante)
+				if not ignorer_ligne:
+					LL.append(trame_courante)
 				trame_courante = []
 				ignorer_ligne = False
 				ignorer_element = False
 				point_darret = 0
+				octet_invalide = False
 
 			if ignorer_ligne == False:
 				if indice_ligne < len(L)-1 and offset_en_hex != 0:
@@ -68,9 +71,9 @@ def LtoLL(L):
 						# determiner s'il s'agit d'octet invalide ou ligne incomplète
 						# le cas d'octet invalide
 
-						if point_darret != offset_en_hex:
+						if octet_invalide:
 							print("point d'arret, offset détecté : "
-								+ str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne)
+								+ str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne + ", trame " + str(len(LL)))
 							erreur(trame_courante, "octet invalide")
 							trame_courante.append("-1")
 							
@@ -91,14 +94,16 @@ def LtoLL(L):
 
 				for indice_element in range(1, len(L[indice_ligne])):
 					element_courant = L[indice_ligne][indice_element]
-					print(element_courant, formatValideByte(element_courant), ignorer_element)
-					# if formatValideByte(element_courant):
+					# print(element_courant, formatValideByte(element_courant), ignorer_element)
 					if formatValideByte(element_courant) and not ignorer_element:
 						trame_courante.append(element_courant)
-						print("append: " + element_courant)
+						# print("append: " + element_courant)
 					elif not formatValideByte(element_courant): 
 						point_darret = len(trame_courante)
 						ignorer_element = True
+						if(len(element_courant) == 2):
+								octet_invalide = True
+								# print(hex(len(trame_courante)), element_courant)
 
 					
 				else:
@@ -106,11 +111,14 @@ def LtoLL(L):
 						element_courant = L[indice_ligne][indice_element]
 						# if formatValideByte(element_courant):
 						if formatValideByte(element_courant) and not ignorer_element:
-							print("append: " + element_courant)
+							# print("append: " + element_courant)
 							trame_courante.append(element_courant)
 						elif not formatValideByte(element_courant): 
 							point_darret = len(trame_courante)
 							ignorer_element = True
+							if(len(element_courant) == 2):
+								octet_invalide = True
+								# print(hex(len(trame_courante)), element_courant)
 
 				if indice_ligne == len(L)-1:
 					LL.append(trame_courante)
@@ -161,6 +169,7 @@ def analyseETHERNET(L):
 	return res
 
 # Renvoie un str représentant l'entête IP
+# utiliser la meme structure pour faire la suite
 def analyseIP(L):
 	res = "\tIP : \n"
 	res += "		Version : 0x"+str(L[14][0])+" ("+str(L[14][0])+")"+"\n"

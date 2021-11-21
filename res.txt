@@ -1,5 +1,5 @@
 
-Trame 0 :
+Trame 1 :
 
 	ETHERNET :
 		Adresse Mac Destination : 00:50:7f:05:7d:40
@@ -38,13 +38,45 @@ Trame 0 :
 		Window : 0x16d0(5840)
 		Checksum : 0x60e4(24804)
 		Urgent Pointer : 0x0000(0)
-	HTTP : 
-		GET / HTTP/1.1
-		Host: www.xircom.com
-		User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.0.0) Gecko/20020623 Debian/1.0.0-0.woody.1
-		Accept: text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,text/css,*/*;q=0.1
-		Accept-Language: fr-FR, fr;q=0.66, en;q=0.33
-		Accept-Encoding: gzip, deflate, compress;q=0.9
-		Accept-Charset: ISO-8859-1, utf-8;q=0.66, *;q=0.66
-		Keep-Alive: 300
-		Connection: keep-alive
+octet non valide, interrupture d'analyse.
+
+Trame 2 :
+
+	ETHERNET :
+		Adresse Mac Destination : 00:50:7f:05:7d:40
+		Adresse Mac Source : 00:10:a4:86:2d:0b
+		Adresse Mac Source : 0x0800 (IPv4)
+	IP : 
+		Version : 0x4 (4)
+		Header length : 0x5 (20)
+		Type of service : 0x00
+		Total Length : 0x0034 (52)
+		Identifier : 0x1799
+		Flags : 0x4000
+			Reserve : 0
+			DF : 1
+			MF : 0
+			Fragment offset : 0000000000000
+		Time To Live : 0x40(64)
+		Protocol : 0x06(6)
+		Header checksum : 0x6df8
+		Adresse IP Source : 0x0a21b6b2(10.33.182.178)
+		Adresse IP Destination : 0xc0373428(192.55.52.40)
+	TCP : 
+		Source port number : 0x84b3(33971)
+		Destination port number : 0x0050(80)
+		Sequence Number : 0xb694b29d(3063198365)
+		Acknowledgment number : 0x24678f57 (610766679)
+		Transport Header Length: 1000(32)
+		Flags : 0x010
+			Reserved : 000000
+			URG : 0
+			ACK : 1
+			PSH : 0
+			RST : 0
+			SYN : 0
+			FIN : 0
+		Window : 0x2094(8340)
+		Checksum : 0x591b(22811)
+		Urgent Pointer : 0x0000(0)
+
