@@ -47,40 +47,70 @@ def LtoLL(L):
 	trame_courante = []
 	ignorer_ligne = False
 	ignorer_element = False
-	# point_darret = 0 # pour voir s'il s'agit d'un octet invalide
+	point_darret = 0 # pour voir s'il s'agit d'un octet invalide
 
 	for indice_ligne in range(len(L)):
 		offset_de_la_ligne = L[indice_ligne][0] # qui doit etre offset
 		offset_en_hex = int(offset_de_la_ligne, base = 16)
+		print("indice ligne = " + str(indice_ligne) + ", offset : " + offset_de_la_ligne)
 		if formatValideOffset(offset_de_la_ligne) :
 			if offset_en_hex == 0:
 				LL.append(trame_courante)
 				trame_courante = []
 				ignorer_ligne = False
 				ignorer_element = False
-				# point_darret = 0
+				point_darret = 0
 
 			if ignorer_ligne == False:
 				if indice_ligne < len(L)-1 and offset_en_hex != 0:
+					# en cas d'erreur
 					if len(trame_courante) < offset_en_hex:
-						print("offset reel, offset détecté : "
-							 + str(hex(len(trame_courante))) + "," + offset_de_la_ligne)
-						# une information pour indiquer une erreur dans le fichier
-						trame_courante.append("-2")
-						erreur(trame_courante, "ligne incomplète")
-						ignorer_ligne = True
-					while(len(trame_courante) > offset_en_hex):
-						trame_courante.pop()
+						# determiner s'il s'agit d'octet invalide ou ligne incomplète
+						# le cas d'octet invalide
 
-					for indice_element in range(len(L[indice_ligne][1:])):
-						if formatValideByte(L[indice_ligne][indice_element]):
-							trame_courante.append(L[indice_ligne][indice_element])
+						if point_darret != offset_en_hex:
+							print("point d'arret, offset détecté : "
+								+ str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne)
+							erreur(trame_courante, "octet invalide")
+							trame_courante.append("-1")
+							
+						else:
+							print("offset reel, offset détecté : "
+								+ str(hex(len(trame_courante))) + "," + "0x" +  offset_de_la_ligne)
+							# une information pour indiquer une erreur dans le fichier
+							trame_courante.append("-2")
+							erreur(trame_courante, "ligne incomplète")
+						LL.append(trame_courante)
+						ignorer_ligne = True
+
+				while(len(trame_courante) > offset_en_hex):
+					trame_courante.pop()
+				if point_darret == offset_en_hex:
+					ignorer_element = False
+					
+
+				for indice_element in range(1, len(L[indice_ligne])):
+					element_courant = L[indice_ligne][indice_element]
+					print(element_courant, formatValideByte(element_courant), ignorer_element)
+					# if formatValideByte(element_courant):
+					if formatValideByte(element_courant) and not ignorer_element:
+						trame_courante.append(element_courant)
+						print("append: " + element_courant)
+					elif not formatValideByte(element_courant): 
+						point_darret = len(trame_courante)
+						ignorer_element = True
 
 					
 				else:
-					for indice_element in range(len(L[indice_ligne])):
-						if formatValideByte(L[indice_ligne][indice_element]):
-							trame_courante.append(L[indice_ligne][indice_element])
+					for indice_element in range(1, len(L[indice_ligne])):
+						element_courant = L[indice_ligne][indice_element]
+						# if formatValideByte(element_courant):
+						if formatValideByte(element_courant) and not ignorer_element:
+							print("append: " + element_courant)
+							trame_courante.append(element_courant)
+						elif not formatValideByte(element_courant): 
+							point_darret = len(trame_courante)
+							ignorer_element = True
 
 				if indice_ligne == len(L)-1:
 					LL.append(trame_courante)

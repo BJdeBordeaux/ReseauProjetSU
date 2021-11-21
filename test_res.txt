@@ -1,8 +1,0 @@
-
-Trame 1 :
-
-	ETHERNET :
-		Adresse Mac Destination : 00:50:7f:05:7d:40
-		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Adresse Mac Source : 0x0800 (IPv4)
-

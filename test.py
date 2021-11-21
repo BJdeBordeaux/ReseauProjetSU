@@ -62,6 +62,10 @@ for i in range(len(LL)):
 	res += information_erreur
 
 # Ecrit le résultat dans le fichier destination
+res = ""
+for l in LL :
+    res += ",".join(l)
+    res += "\n"
 d.write(res+"\n")
 
 # Ferme les fichiers
