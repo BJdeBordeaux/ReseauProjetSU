@@ -170,9 +170,13 @@ def analyseETHERNET(L):
 
 # Renvoie un str représentant l'entête IP
 # utiliser la meme structure pour faire la suite
+# commencer par 0 au lieu de 14
 def analyseIP(L):
 	res = "\tIP : \n"
-	res += "		Version : 0x"+str(L[14][0])+" ("+str(L[14][0])+")"+"\n"
+
+	# j'ai modifié cette ligne pour adapter au main
+	res += "		Version : 0x"+str(L[0][0])+" ("+str(L[0][0])+")"+"\n"
+	
 	res += "		Header length : 0x"+str(L[14][1])+" ("+str(int(L[14][1])*4)+")"+"\n"
 	res += "		Type of service : "+convertions.LStrToStr(L[15])+"\n"
 	res += "		Total Length : "+convertions.LStrToStr(L[16:18])+" ("+convertions.LStrToPort(L[16:18])+")"+"\n"
@@ -195,10 +199,17 @@ def analyseIP(L):
 	return res,int(L[14][1])*4+14
 
 # Renvoie l'option representant l'entete IP option
-def analyse_ip_option(Liste):
+# à écrire
+def analyse_IP_option(Liste):
+	return ""
+
+# Renvoie l'option representant l'entete UDP
+# à écrire
+def analyse_UDP(Liste):
 	return ""
 
 # Renvoie un str représentant l'entête TCP
+# à modifier
 def analyseTCP(L):
 	a,i=analyseIP(L)
 	res = "\tTCP : \n"
@@ -225,6 +236,7 @@ def analyseTCP(L):
 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
 
 # Renvoie un str représentant l'entête HTTP
+# à modifier
 def analyseHTTP(L):
 	a,i=analyseTCP(L)
 	tmp=list()
@@ -245,3 +257,13 @@ def analyseHTTP(L):
 	res+=bytes_object.decode("ASCII")
 	return res
 
+
+# Renvoie l'option representant l'entete DNS
+# à écrire
+def analyse_DNS(Liste):
+	return ""
+
+# Renvoie l'option representant l'entete DHCP
+# à écrire
+def analyse_DHCP(Liste):
+	return ""

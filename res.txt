@@ -6,21 +6,21 @@ Trame 1 :
 		Adresse Mac Source : 00:10:a4:86:2d:0b
 		Adresse Mac Source : 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (4)
-		Header length : 0x5 (20)
-		Type of service : 0x00
-		Total Length : 0x0219 (537)
-		Identifier : 0x1798
-		Flags : 0x4000
-			Reserve : 0
-			DF : 1
+		Version : 0x4 (b)
+		Header length : 0x6 (24)
+		Type of service : 0xb2
+		Total Length : 0xc037 (49207)
+		Identifier : 0x3428
+		Flags : 0x84b3
+			Reserve : 1
+			DF : 0
 			MF : 0
-			Fragment offset : 0000000000000
-		Time To Live : 0x40(64)
-		Protocol : 0x06(6)
-		Header checksum : 0x6c14
-		Adresse IP Source : 0x0a21b6b2(10.33.182.178)
-		Adresse IP Destination : 0xc0373428(192.55.52.40)
+			Fragment offset : 0010010110011
+		Time To Live : 0x00(0)
+		Protocol : 0x50(80)
+		Header checksum : 0xb694
+		Adresse IP Source : 0xb0b82467(176.184.36.103)
+		Adresse IP Destination : 0x89e98018(137.233.128.24)
 	TCP : 
 		Source port number : 0x84b3(33971)
 		Destination port number : 0x0050(80)
@@ -47,21 +47,21 @@ Trame 2 :
 		Adresse Mac Source : 00:10:a4:86:2d:0b
 		Adresse Mac Source : 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (4)
-		Header length : 0x5 (20)
-		Type of service : 0x00
-		Total Length : 0x0034 (52)
-		Identifier : 0x1799
-		Flags : 0x4000
-			Reserve : 0
-			DF : 1
+		Version : 0x4 (b)
+		Header length : 0x6 (24)
+		Type of service : 0xb2
+		Total Length : 0xc037 (49207)
+		Identifier : 0x3428
+		Flags : 0x84b3
+			Reserve : 1
+			DF : 0
 			MF : 0
-			Fragment offset : 0000000000000
-		Time To Live : 0x40(64)
-		Protocol : 0x06(6)
-		Header checksum : 0x6df8
-		Adresse IP Source : 0x0a21b6b2(10.33.182.178)
-		Adresse IP Destination : 0xc0373428(192.55.52.40)
+			Fragment offset : 0010010110011
+		Time To Live : 0x00(0)
+		Protocol : 0x50(80)
+		Header checksum : 0xb694
+		Adresse IP Source : 0xb29d2467(178.157.36.103)
+		Adresse IP Destination : 0x8f578010(143.87.128.16)
 	TCP : 
 		Source port number : 0x84b3(33971)
 		Destination port number : 0x0050(80)

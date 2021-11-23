@@ -34,6 +34,12 @@ for e in L:
 LL = fonctions.LtoLL(LL)
 res = ""
 
+# declaration de variables
+longueur_ethernet = 14
+longueur_IP = 20
+longueur_IP_option = 40
+longueur_UDP = 8
+
 # Affiche les trames, et les entêtes qui correspondent
 for i in range(len(LL)):
 	res += "\nTrame "+str(i+1)+" :\n"
@@ -50,16 +56,21 @@ for i in range(len(LL)):
 		information_erreur += "\n"
 		LL[i].pop()
 
-	position_debut = 0
-	position_fin = 14
-	res += "\n"+fonctions.analyseETHERNET(LL[i][position_debut:position_fin])
+	position_courante = 0
+	res += "\n"+fonctions.analyseETHERNET(LL[i][position_courante:])
+	position_courante = longueur_ethernet
 	
-	if len(LL[i]) > 14:
-		res += fonctions.analyseIP(LL[i])[0]
-	if len(LL[i]) > 34:
-		res += fonctions.analyseTCP(LL[i])[0]
-	if len(LL[i]) > 54 and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
-		res += fonctions.analyseHTTP(LL[i])
+	if len(LL[i]) > position_courante:
+		res += fonctions.analyseIP(LL[i][position_courante:])[0]
+		position_courante += longueur_IP
+		if LL[i][position_courante][1] == 'f':
+			res += fonctions.analyse_IP_option(LL[i][position_courante:])
+			position_courante += longueur_IP_option
+		if len(LL[i]) > position_courante:
+			res += fonctions.analyseTCP(LL[i])[0]
+			# res += fonctions.analyse_UDP(LL[i])[0]
+			if len(LL[i]) > 54 and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
+				res += fonctions.analyseHTTP(LL[i])
 	
 	res += information_erreur
 
