@@ -1,0 +1,24 @@
+
+Trame 1 :
+
+	ETHERNET :
+		Adresse Mac Destination : 01:00:5e:00:00:fb
+		Adresse Mac Source : 28:c2:dd:8b:da:93
+		Protocol : 0x0800 (IPv4)
+	IP : 
+		Version : 0x4 (IPv4)
+		Header length : 0x5 (20)
+		Type of service : 0x00
+		Total Length : 0x003e (62 octets)
+		Identifier : 0xf949
+		Flags : 0x000a
+			Reserve : 0
+			DF : 0
+			MF : 0
+			Fragment offset : 0xa (80 octets)
+		Time To Live : 0x01 (1)
+		Protocol : 0x11 (UDP)
+		Header checksum : 0x1daa
+		Adresse IP Source : 0xc0a80118 (192.168.1.24)
+		Adresse IP Destination : 0xe00000fb (224.0.0.251)
+

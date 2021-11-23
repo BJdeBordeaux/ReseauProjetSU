@@ -39,6 +39,7 @@ longueur_ethernet = 14
 longueur_IP = 20
 longueur_IP_option = 40
 longueur_UDP = 8
+longueur_TCP = 20
 
 # Affiche les trames, et les entêtes qui correspondent
 for i in range(len(LL)):
@@ -47,7 +48,6 @@ for i in range(len(LL)):
 	#afficher information d'erreur
 	information_erreur = ""
 	if(not fonctions.formatValideByte(LL[i][-1])):
-		print(LL[i][-1])
 		if LL[i][-1] in convertions.dico_type_erreur:
 			information_erreur = convertions.dico_type_erreur.get(LL[i][-1])
 		else: 
@@ -59,18 +59,26 @@ for i in range(len(LL)):
 	position_courante = 0
 	res += "\n"+fonctions.analyseETHERNET(LL[i][position_courante:])
 	position_courante = longueur_ethernet
+	prochain_protocol = ""
 	
 	if len(LL[i]) > position_courante:
-		res += fonctions.analyseIP(LL[i][position_courante:])[0]
+		res_annalyse_IP = fonctions.analyseIP(LL[i][position_courante:])
+		res += res_annalyse_IP[0]
 		position_courante += longueur_IP
 		if LL[i][position_courante][1] == 'f':
 			res += fonctions.analyse_IP_option(LL[i][position_courante:])
-			position_courante += longueur_IP_option
+
 		if len(LL[i]) > position_courante:
-			res += fonctions.analyseTCP(LL[i])[0]
-			# res += fonctions.analyse_UDP(LL[i])[0]
-			if len(LL[i]) > 54 and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
-				res += fonctions.analyseHTTP(LL[i])
+			if prochain_protocol == "TCP":
+				res += fonctions.analyseTCP(LL[i])[0]
+				position_courante += longueur_TCP
+			elif prochain_protocol == "UDP":
+				res += fonctions.analyse_UDP(LL[i][position_courante:])[0]
+				position_courante += longueur_UDP
+
+			if len(LL[i]) > position_courante:
+				print("analyse ???")
+			# if len(LL[i]) > position_courante and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
 	
 	res += information_erreur
 

@@ -4,5 +4,8 @@ all:
 test:
 	python3 test.py test.txt test_res.txt && cat test_res.txt
 
+udp:
+	python3 main.py udp.txt udp_res.txt && cat udp_res.txt
+
 clean:
 	rm res.txt

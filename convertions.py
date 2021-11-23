@@ -7,6 +7,15 @@ dico_type_erreur = {
 	"-2" : "ligne incomplète"
 }
 
+dico_type_ip_protocol = {
+	"11" : "UDP",
+	"06" : "TCP",
+	"01" : "ICMP",
+}
+
+def liste_hex_2_dec(Liste):
+	return str(int("".join(Liste), base = 16))
+
 def LStrToInt(L):
 	""" list[str] -> str : Transforme une liste d'hexa en liste d'entier"""
 	res = list()

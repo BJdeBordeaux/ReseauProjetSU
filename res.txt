@@ -4,79 +4,78 @@ Trame 1 :
 	ETHERNET :
 		Adresse Mac Destination : 00:50:7f:05:7d:40
 		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Adresse Mac Source : 0x0800 (IPv4)
+		Protocol : 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (b)
-		Header length : 0x6 (24)
-		Type of service : 0xb2
-		Total Length : 0xc037 (49207)
-		Identifier : 0x3428
-		Flags : 0x84b3
-			Reserve : 1
-			DF : 0
+		Version : 0x4 (IPv4)
+		Header length : 0x5 (20)
+		Type of service : 0x00
+		Total Length : 0x0219 (537 octets)
+		Identifier : 0x1798
+		Flags : 0x4000
+			Reserve : 0
+			DF : 1
 			MF : 0
-			Fragment offset : 0010010110011
-		Time To Live : 0x00(0)
-		Protocol : 0x50(80)
-		Header checksum : 0xb694
-		Adresse IP Source : 0xb0b82467(176.184.36.103)
-		Adresse IP Destination : 0x89e98018(137.233.128.24)
+			Fragment offset : 0x0 (0 octets)
+		Time To Live : 0x40 (64)
+		Protocol : 0x06 (TCP)
+		Header checksum : 0x6c14
+		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
+		Adresse IP Destination : 0xc0373428 (192.55.52.40)
 	TCP : 
-		Source port number : 0x84b3(33971)
-		Destination port number : 0x0050(80)
-		Sequence Number : 0xb694b0b8(3063197880)
-		Acknowledgment number : 0x246789e9 (610765289)
-		Transport Header Length: 1000(32)
-		Flags : 0x018
-			Reserved : 000000
-			URG : 0
-			ACK : 1
-			PSH : 1
+		Source port number : 0x4500(17664)
+		Destination port number : 0x0219(537)
+		Sequence Number : 0x17984000(395853824)
+		Acknowledgment number : 0x40066c14 (1074162708)
+		Transport Header Length: 0000(0)
+		Flags : 0xa21
+			Reserved : 101000
+			URG : 1
+			ACK : 0
+			PSH : 0
 			RST : 0
 			SYN : 0
-			FIN : 0
-		Window : 0x16d0(5840)
-		Checksum : 0x60e4(24804)
-		Urgent Pointer : 0x0000(0)
-octet non valide, interrupture d'analyse.
+			FIN : 1
+		Window : 0xb6b2(46770)
+		Checksum : 0xc037(49207)
+		Urgent Pointer : 0x3428(13352)
 
 Trame 2 :
 
 	ETHERNET :
 		Adresse Mac Destination : 00:50:7f:05:7d:40
 		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Adresse Mac Source : 0x0800 (IPv4)
+		Protocol : 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (b)
-		Header length : 0x6 (24)
-		Type of service : 0xb2
-		Total Length : 0xc037 (49207)
-		Identifier : 0x3428
-		Flags : 0x84b3
-			Reserve : 1
-			DF : 0
+		Version : 0x4 (IPv4)
+		Header length : 0x5 (20)
+		Type of service : 0x00
+		Total Length : 0x0034 (52 octets)
+		Identifier : 0x1799
+		Flags : 0x4000
+			Reserve : 0
+			DF : 1
 			MF : 0
-			Fragment offset : 0010010110011
-		Time To Live : 0x00(0)
-		Protocol : 0x50(80)
-		Header checksum : 0xb694
-		Adresse IP Source : 0xb29d2467(178.157.36.103)
-		Adresse IP Destination : 0x8f578010(143.87.128.16)
+			Fragment offset : 0x0 (0 octets)
+		Time To Live : 0x40 (64)
+		Protocol : 0x06 (TCP)
+		Header checksum : 0x6df8
+		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
+		Adresse IP Destination : 0xc0373428 (192.55.52.40)
 	TCP : 
-		Source port number : 0x84b3(33971)
-		Destination port number : 0x0050(80)
-		Sequence Number : 0xb694b29d(3063198365)
-		Acknowledgment number : 0x24678f57 (610766679)
-		Transport Header Length: 1000(32)
-		Flags : 0x010
-			Reserved : 000000
-			URG : 0
-			ACK : 1
+		Source port number : 0x4500(17664)
+		Destination port number : 0x0034(52)
+		Sequence Number : 0x17994000(395919360)
+		Acknowledgment number : 0x40066df8 (1074163192)
+		Transport Header Length: 0000(0)
+		Flags : 0xa21
+			Reserved : 101000
+			URG : 1
+			ACK : 0
 			PSH : 0
 			RST : 0
 			SYN : 0
-			FIN : 0
-		Window : 0x2094(8340)
-		Checksum : 0x591b(22811)
-		Urgent Pointer : 0x0000(0)
+			FIN : 1
+		Window : 0xb6b2(46770)
+		Checksum : 0xc037(49207)
+		Urgent Pointer : 0x3428(13352)
 

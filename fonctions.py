@@ -163,8 +163,12 @@ def analyseETHERNET(L):
 	position_debut = position_fin
 	position_fin = 14
 	if verificateur_avant_constructeur(L, position_debut, position_fin):
-		res += constructeur_chaine_caracteres(2, "Adresse Mac Source", "0x"+"".join(L[position_debut:position_fin]), 
-		convertions.dico_type_eternet["".join(L[position_debut:position_fin])])
+		type_str = "".join(L[position_debut:position_fin])
+		type_hex = convertions.dico_type_eternet.get(type_str)
+		if type_hex is not None:
+			res += constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, type_hex)
+		else: 
+			res += constructeur_chaine_caracteres(2, "Protocol", "0x" + type_hex, "inconnu")	
 	
 	return res
 
@@ -174,29 +178,70 @@ def analyseETHERNET(L):
 def analyseIP(L):
 	res = "\tIP : \n"
 
-	# j'ai modifié cette ligne pour adapter au main
-	res += "		Version : 0x"+str(L[0][0])+" ("+str(L[0][0])+")"+"\n"
+	position_debut = 0
+	position_fin = 1
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Version", "0x" + L[position_debut:position_fin][0][0], "IPv" + L[position_debut:position_fin][0][0])	
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Header length", "0x" + L[position_debut:position_fin][0][1], str(int(L[position_debut:position_fin][0][1])*4))
+
+	position_debut = position_fin
+	position_fin = 2
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Type of service", "0x" + L[position_debut:position_fin][0])
+
+	position_debut = position_fin
+	position_fin = 4
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Total Length", "0x" + "".join(L[position_debut:position_fin]), convertions.liste_hex_2_dec(L[position_debut:position_fin]) + " octets")	
 	
-	res += "		Header length : 0x"+str(L[14][1])+" ("+str(int(L[14][1])*4)+")"+"\n"
-	res += "		Type of service : "+convertions.LStrToStr(L[15])+"\n"
-	res += "		Total Length : "+convertions.LStrToStr(L[16:18])+" ("+convertions.LStrToPort(L[16:18])+")"+"\n"
-	res += "		Identifier : "+convertions.LStrToStr(L[18:20])+"\n"
-	res += "		Flags : "+convertions.LStrToStr(L[20:22])+"\n"
-	Lb = convertions.LStrToBin(L[20:22])
-	res += "			Reserve : "+Lb[0]+"\n"
-	res += "			DF : "+Lb[1]+"\n"
-	res += "			MF : "+Lb[2]+"\n"
-	res += "			Fragment offset : "
-	for i in range(3,len(Lb)):
-		res+= Lb[i]
-	res += "\n"
-	res += "		Time To Live : "+convertions.LStrToStr(L[22])+"("+convertions.LStrToPort([L[22]])+")"+"\n"
-	res += "		Protocol : "+convertions.LStrToStr(L[23])+"("+convertions.LStrToPort([L[23]])+")"+"\n"
-	res += "		Header checksum : "+convertions.LStrToStr(L[24:26])+"\n"
-	res += "		Adresse IP Source : "+convertions.LStrToStr(L[26:30])+"("+convertions.LStrToIp(L[26:30])+")"+"\n"
-	res += "		Adresse IP Destination : "+convertions.LStrToStr(L[30:34])+"("+convertions.LStrToIp(L[30:34])+")"+"\n"
+	position_debut = position_fin
+	position_fin = 6
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Identifier", "0x" + "".join(L[position_debut:position_fin]))	
 	
-	return res,int(L[14][1])*4+14
+	position_debut = position_fin
+	position_fin = 8
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Flags", "0x" + "".join(L[position_debut:position_fin]))
+		Lb = format(int("".join(L[6:8]), base = 16), '016b') 
+		res += constructeur_chaine_caracteres(3, "Reserve", Lb[0])
+		res += constructeur_chaine_caracteres(3, "DF", Lb[1])
+		res += constructeur_chaine_caracteres(3, "MF", Lb[2])
+		res += constructeur_chaine_caracteres(3, "Fragment offset", str(hex(int(Lb[3:], base = 2))), str(int(Lb[3:], base = 2)*8) + " octets")
+	
+	position_debut = position_fin
+	position_fin = 9
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Time To Live", "0x" + "".join(L[position_debut:position_fin]), convertions.liste_hex_2_dec(L[position_debut:position_fin]))
+	
+	position_debut = position_fin
+	position_fin = 10
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		protocol_hex = "".join(L[position_debut:position_fin])
+		if convertions.dico_type_ip_protocol.get(protocol_hex) is not None:
+			res += constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, convertions.dico_type_ip_protocol.get(protocol_hex))
+		else: 
+			res += constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, "inconnu")
+	
+	position_debut = position_fin
+	position_fin = 12
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Header checksum", "0x" + "".join(L[position_debut:position_fin]))
+	
+	position_debut = position_fin
+	position_fin = 16
+	ip = [str(int(hex, base = 16)) for hex in L[position_debut:position_fin]]
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Adresse IP Source", "0x" + "".join(L[position_debut:position_fin]),".".join(ip))
+
+
+	position_debut = position_fin
+	position_fin = 20
+	ip = [str(int(hex, base = 16)) for hex in L[position_debut:position_fin]]
+	if verificateur_avant_constructeur(L, position_debut, position_fin):
+		res += constructeur_chaine_caracteres(2, "Adresse IP Destination", "0x" + "".join(L[position_debut:position_fin]), ".".join(ip))	
+	return res,int(L[0][1])*4+14
 
 # Renvoie l'option representant l'entete IP option
 # à écrire
@@ -211,7 +256,7 @@ def analyse_UDP(Liste):
 # Renvoie un str représentant l'entête TCP
 # à modifier
 def analyseTCP(L):
-	a,i=analyseIP(L)
+	a, i=analyseIP(L)
 	res = "\tTCP : \n"
 	res += "		Source port number : "+convertions.LStrToStr(L[i:i+2])+"("+convertions.LStrToPort(L[i:i+2])+")"+"\n"
 	res += "		Destination port number : "+convertions.LStrToStr(L[i+2:i+4])+"("+convertions.LStrToPort(L[i+2:i+4])+")"+"\n"
@@ -234,29 +279,6 @@ def analyseTCP(L):
 	res += "		Checksum : "+convertions.LStrToStr(L[i+16:i+18])+"("+convertions.LStrToPort(L[i+16:i+18])+")"+"\n"
 	res += "		Urgent Pointer : "+convertions.LStrToStr(L[i+18:i+20])+"("+convertions.LStrToPort(L[i+18:i+20])+")"+"\n"
 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
-
-# Renvoie un str représentant l'entête HTTP
-# à modifier
-def analyseHTTP(L):
-	a,i=analyseTCP(L)
-	tmp=list()
-	res = "\tHTTP : \n"
-	tmp.append("09")
-	tmp.append("09")
-	while not(L[i] == "0d" and L[i+1] == "0a" and L[i+2] == "0d" and L[i+3] == "0a"):
-		if L[i] == "0a":
-			tmp.append(L[i])
-			tmp.append("09")
-			tmp.append("09")
-		else:
-			tmp.append(L[i])
-		i+=1
-
-	bytes_object=bytes.fromhex(convertions.LStrToStr(tmp)[2:])
-
-	res+=bytes_object.decode("ASCII")
-	return res
-
 
 # Renvoie l'option representant l'entete DNS
 # à écrire
