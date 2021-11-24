@@ -1,4 +1,4 @@
-import fonctions, sys, re
+import analyse, sys, re
 
 fichier_a_lire = "http.txt"
 fichier_a_ecrire  = "http_res.txt"
@@ -21,13 +21,13 @@ for line in f:
 # Construit la structure générale du programme, une liste composée de listes, dont chaque représente une trame (sans commentaire)
 LL = list()
 for e in L:
-	if fonctions.offset_valide(e[0:4]):
+	if analyse.offset_valide(e[0:4]):
 		LL.append(e.split())
 # list[list[octet]]
 # list[trame[octet]]
 
 # # Retire les offset
-# LL = fonctions.LLtoLLclean(fonctions.LtoLL(LL))
+# LL = analyse.LLtoLLclean(analyse.liste_brute_2_liste(LL))
 # res = ""
 
 # # Affiche les trames, et les entêtes qui correspondent
@@ -36,13 +36,13 @@ for e in L:
 # 	if len(LL[i]) < 14:
 # 		print("")
 # 		exit()
-# 	res += "\n"+fonctions.analyseETHERNET(LL[i])
+# 	res += "\n"+analyse.analyse_ethernet(LL[i])
 # 	if len(LL[i]) > 14:
-# 		res += fonctions.analyseIP(LL[i])[0]
+# 		res += analyse.analyse_IP(LL[i])[0]
 # 	if len(LL[i]) > 34:
-# 		res += fonctions.analyseTCP(LL[i])[0]
+# 		res += analyse.analyseTCP(LL[i])[0]
 # 	if len(LL[i]) > 54 and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
-# 		res += fonctions.analyseHTTP(LL[i])
+# 		res += analyse.analyseHTTP(LL[i])
 
 # Ecrit le résultat dans le fichier destination
 res = ""

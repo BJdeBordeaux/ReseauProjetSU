@@ -1,5 +1,5 @@
 from os import truncate
-import convertions
+import tools
 
 # Indique qu'il y a une erreur et sa position
 def erreur(pos):
@@ -45,7 +45,7 @@ def octet_valide(octet):
 	return True
 
 # Créer la structure générale des trames : créer une liste composée de listes et chaque liste est une trame
-def LtoLL(L):
+def liste_brute_2_liste(L):
 	LL = []
 	tmp = []
 	indice_element = 0
@@ -98,16 +98,16 @@ def LLtoLLclean(LL):
 	return res
 
 # Renvoie un str représentant l'entête ETHERNET
-def analyseETHERNET(L):
+def analyse_ethernet(L):
 	res = "\tETHERNET :\n"
-	macDst=convertions.LStrToMac(L[0:6])
-	macSrc=convertions.LStrToMac(L[6:12])
+	macDst=tools.LStrToMac(L[0:6])
+	macSrc=tools.LStrToMac(L[6:12])
 	if L[12:14] == ["08","00"]:
 		etherType="IPv4"
 
 	res += "		Adresse Mac Destination : "+macDst+"\n"
 	res += "		Adresse Mac Source : "+macSrc+"\n"
-	res += "		Type : "+convertions.LStrToStr(L[12:14])+" "+etherType+"\n"
+	res += "		Type : "+tools.LStrToStr(L[12:14])+" "+etherType+"\n"
 	return res
 
 def un_truc(indentation, champs, valeur, interpretation=""):
@@ -118,15 +118,15 @@ def un_truc(indentation, champs, valeur, interpretation=""):
 	return res
 
 # Renvoie un str représentant l'entête IP
-def analyseIP(L):
+def analyse_IP(L):
 	res = "\tIP : \n"
 	res += "		Version : 0x"+str(L[14][0])+" ("+str(L[14][0])+")"+"\n"
 	res += "		Header length : 0x"+str(L[14][1])+" ("+str(int(L[14][1])*4)+")"+"\n"
-	res += "		Type of service : "+convertions.LStrToStr(L[15])+"\n"
-	res += "		Total Length : "+convertions.LStrToStr(L[16:18])+" ("+convertions.LStrToPort(L[16:18])+")"+"\n"
-	res += "		Identifier : "+convertions.LStrToStr(L[18:20])+"\n"
-	res += "		Flags : "+convertions.LStrToStr(L[20:22])+"\n"
-	Lb = convertions.LStrToBin(L[20:22])
+	res += "		Type of service : "+tools.LStrToStr(L[15])+"\n"
+	res += "		Total Length : "+tools.LStrToStr(L[16:18])+" ("+tools.LStrToPort(L[16:18])+")"+"\n"
+	res += "		Identifier : "+tools.LStrToStr(L[18:20])+"\n"
+	res += "		Flags : "+tools.LStrToStr(L[20:22])+"\n"
+	Lb = tools.LStrToBin(L[20:22])
 	res += "			Reserve : "+Lb[0]+"\n"
 	res += "			DF : "+Lb[1]+"\n"
 	res += "			MF : "+Lb[2]+"\n"
@@ -134,23 +134,23 @@ def analyseIP(L):
 	for i in range(3,len(Lb)):
 		res+= Lb[i]
 	res += "\n"
-	res += "		Time To Live : "+convertions.LStrToStr(L[22])+"("+convertions.LStrToPort([L[22]])+")"+"\n"
-	res += "		Protocol : "+convertions.LStrToStr(L[23])+"("+convertions.LStrToPort([L[23]])+")"+"\n"
-	res += "		Header checksum : "+convertions.LStrToStr(L[24:26])+"\n"
-	res += "		Adresse IP Source : "+convertions.LStrToStr(L[26:30])+"("+convertions.LStrToIp(L[26:30])+")"+"\n"
-	res += "		Adresse IP Destination : "+convertions.LStrToStr(L[30:34])+"("+convertions.LStrToIp(L[30:34])+")"+"\n"
+	res += "		Time To Live : "+tools.LStrToStr(L[22])+"("+tools.LStrToPort([L[22]])+")"+"\n"
+	res += "		Protocol : "+tools.LStrToStr(L[23])+"("+tools.LStrToPort([L[23]])+")"+"\n"
+	res += "		Header checksum : "+tools.LStrToStr(L[24:26])+"\n"
+	res += "		Adresse IP Source : "+tools.LStrToStr(L[26:30])+"("+tools.LStrToIp(L[26:30])+")"+"\n"
+	res += "		Adresse IP Destination : "+tools.LStrToStr(L[30:34])+"("+tools.LStrToIp(L[30:34])+")"+"\n"
 	
 	return res,int(L[14][1])*4+14
 
 # Renvoie un str représentant l'entête TCP
 def analyseTCP(L):
-	a,i=analyseIP(L)
+	a,i=analyse_IP(L)
 	res = "\tTCP : \n"
-	res += "		Source port number : "+convertions.LStrToStr(L[i:i+2])+"("+convertions.LStrToPort(L[i:i+2])+")"+"\n"
-	res += "		Destination port number : "+convertions.LStrToStr(L[i+2:i+4])+"("+convertions.LStrToPort(L[i+2:i+4])+")"+"\n"
-	res += "		Sequence Number : "+convertions.LStrToStr(L[i+4:i+8])+"("+convertions.LStrToPort(L[i+4:i+8])+")"+"\n"
-	res += "		Acknowledgment number : "+convertions.LStrToStr(L[i+8:i+12])+" ("+convertions.LStrToPort(L[i+8:i+12])+")"+"\n"
-	Lb = convertions.LStrToBin(L[i+12:i+14])
+	res += "		Source port number : "+tools.LStrToStr(L[i:i+2])+"("+tools.LStrToPort(L[i:i+2])+")"+"\n"
+	res += "		Destination port number : "+tools.LStrToStr(L[i+2:i+4])+"("+tools.LStrToPort(L[i+2:i+4])+")"+"\n"
+	res += "		Sequence Number : "+tools.LStrToStr(L[i+4:i+8])+"("+tools.LStrToPort(L[i+4:i+8])+")"+"\n"
+	res += "		Acknowledgment number : "+tools.LStrToStr(L[i+8:i+12])+" ("+tools.LStrToPort(L[i+8:i+12])+")"+"\n"
+	Lb = tools.LStrToBin(L[i+12:i+14])
 	res += "		Transport Header Length: "+Lb[0]+Lb[1]+Lb[2]+Lb[3]+"("+str(int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4)+")"+"\n"
 	res += "		Flags : 0x"+L[i+12][1]+L[i+13]+"\n"
 	res += "			Reserved : "
@@ -163,9 +163,9 @@ def analyseTCP(L):
 	res += "			RST : "+Lb[13]+"\n"
 	res += "			SYN : "+Lb[14]+"\n"
 	res += "			FIN : "+Lb[15]+"\n"
-	res += "		Window : "+convertions.LStrToStr(L[i+14:i+16])+"("+convertions.LStrToPort(L[i+14:i+16])+")"+"\n"
-	res += "		Checksum : "+convertions.LStrToStr(L[i+16:i+18])+"("+convertions.LStrToPort(L[i+16:i+18])+")"+"\n"
-	res += "		Urgent Pointer : "+convertions.LStrToStr(L[i+18:i+20])+"("+convertions.LStrToPort(L[i+18:i+20])+")"+"\n"
+	res += "		Window : "+tools.LStrToStr(L[i+14:i+16])+"("+tools.LStrToPort(L[i+14:i+16])+")"+"\n"
+	res += "		Checksum : "+tools.LStrToStr(L[i+16:i+18])+"("+tools.LStrToPort(L[i+16:i+18])+")"+"\n"
+	res += "		Urgent Pointer : "+tools.LStrToStr(L[i+18:i+20])+"("+tools.LStrToPort(L[i+18:i+20])+")"+"\n"
 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
 
 # Renvoie un str représentant l'entête HTTP
@@ -184,7 +184,7 @@ def analyseHTTP(L):
 			tmp.append(L[i])
 		i+=1
 
-	bytes_object=bytes.fromhex(convertions.LStrToStr(tmp)[2:])
+	bytes_object=bytes.fromhex(tools.LStrToStr(tmp)[2:])
 
 	res+=bytes_object.decode("ASCII")
 	return res

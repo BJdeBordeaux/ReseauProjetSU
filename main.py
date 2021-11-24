@@ -1,10 +1,10 @@
-import convertions, fonctions, sys
+import tools, analyse, sys
 
-if len(sys.argv) != 3: # Si il y a bien 2 arguments, correspondant aux fichiers source et destination
+if len(sys.argv) != 3: # vérifier s'il y a 2 arguments :  fichiers source et destination
 	print("Erreur : Usage : <nom du fichier source> <nom du fichier destination>")
 	exit()
 
-# Vérifie l'existence du fichier source
+# Vérifier l'existence du fichier source
 try:
 	f = open(sys.argv[1], "r")
 except:
@@ -14,24 +14,27 @@ except:
 d = open(sys.argv[2], "w")
 liste_brut = list()
 
-# Construit une liste à partir d'un fichier text, ligne par ligne
+# Construit une liste brute à partir d'un fichier text
+# les éléments sont des string représentant une ligne
 for line in f:
 	liste_brut.extend(line.split("\t"))
 
-# Construit la structure générale du programme, une liste composée de listes, dont chaque représente une trame (sans commentaire)
+# Construire une liste de listes, dont chacun représente une trame
+# list[list[str]]
 liste = list()
 for ligne in liste_brut:
+	# découvrir l'offset pour faciliter la lecture
+	# s'il est valide, on prend cette ligne
 	indice_premier_espace = 0
 	for i in range(len(ligne)):
 		if ligne[i] == ' ':
 			indice_premier_espace = i
 			break
-	if fonctions.offset_valide(ligne[0:indice_premier_espace]):
+	if tools.offset_valide(ligne[0:indice_premier_espace]):
 		liste.append(ligne.split())
 
-# Retire les offset
-# liste = fonctions.LLtoLLclean(fonctions.LtoLL(liste))
-liste = fonctions.LtoLL(liste)
+# Retirer les offset et les valeurs textuelles
+liste = tools.liste_brute_2_liste(liste)
 res = ""
 
 # declaration de variables
@@ -41,46 +44,51 @@ longueur_IP_option = 40
 longueur_UDP = 8
 longueur_TCP = 20
 
-# Affiche les trames, et les entêtes qui correspondent
+# construire les chaînes de caractères correspondant aux trames
 for index_trame in range(len(liste)):
 	res += "\nTrame "+str(index_trame+1)+" :\n"
 
 	#afficher information d'erreur
 	information_erreur = ""
-	if(not fonctions.octet_valide(liste[index_trame][-1])):
-		if liste[index_trame][-1] in convertions.dico_type_erreur:
-			information_erreur = convertions.dico_type_erreur.get(liste[index_trame][-1])
-		else: 
-			information_erreur = "Erreur inconnue"
-		information_erreur += ", interrupture d'analyse. "
-		information_erreur += "Erreur se trouve a l'octet " + str(len(liste[index_trame])+1)
-		information_erreur += "\n"
+	if(not tools.octet_valide(liste[index_trame][-1])):
+		information_erreur += tools.info_erreur(liste[index_trame][-1], len(liste[index_trame]))
 		liste[index_trame].pop()
 
+	# analyse Ethernet
 	position_courante = 0
-	res += "\n"+fonctions.analyseETHERNET(liste[index_trame][position_courante:])
+	res += "\n"+analyse.analyse_ethernet(liste[index_trame][position_courante:])
 	position_courante = longueur_ethernet
 	prochain_protocol = ""
 	
+	# analyse IP
 	if len(liste[index_trame]) > position_courante:
-		res_annalyse_IP = fonctions.analyseIP(liste[index_trame][position_courante:])
-		res += res_annalyse_IP[0]
+		res_annalyse_IP = analyse.analyse_IP(liste[index_trame][position_courante:])
+		res += res_annalyse_IP
 		position_courante += longueur_IP
-		if liste[index_trame][position_courante][1] == 'f':
-			res += fonctions.analyse_IP_option(liste[index_trame][position_courante:])
 
+		# analyse option IP
+		if len(liste[index_trame]) > position_courante:
+			if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
+				res += "Longueur IP non valide. Passe à la trame prochaine.\n"
+				continue
+			if liste[index_trame][position_courante][1] == 'f':
+				res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
+				position_courante += longueur_IP_option
+
+		# analyse UDP
 		if len(liste[index_trame]) > position_courante:
 			if prochain_protocol == "UDP":
-				res += fonctions.analyse_UDP(liste[index_trame][position_courante:])[0]
+				res += analyse.analyse_UDP(liste[index_trame][position_courante:])[0]
 				position_courante += longueur_UDP
 
-			if len(liste[index_trame]) > position_courante:
-				print("analyse ???")
+			# if len(liste[index_trame]) > position_courante:
+				# print("analyse ???")
 			# if len(liste[index_trame]) > position_courante and liste[index_trame][len(liste[index_trame])-4:len(liste[index_trame])] == ["0d", "0a", "0d", "0a"]:
 	
+	# ajout d'information d'erreur à la fin
 	res += information_erreur
 
-# Ecrit le résultat dans le fichier destination
+# Ecrire le trame dans le fichier destination
 d.write(res+"\n")
 
 # Ferme les fichiers
