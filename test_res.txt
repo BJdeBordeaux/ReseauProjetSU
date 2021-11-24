@@ -4,7 +4,7 @@ Trame 1 :
 	ETHERNET :
 		Adresse Mac Destination : 00:50:7f:05:7d:40
 		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Adresse Mac Source : 0x0800 (IPv4)
+		Protocol : 0x0800 (IPv4)
 octet non valide, interrupture d'analyse.
 
 Trame 2 :
@@ -12,7 +12,7 @@ Trame 2 :
 	ETHERNET :
 		Adresse Mac Destination : 01:50:7f:05:7d:40
 		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Adresse Mac Source : 0x0800 (IPv4)
+		Protocol : 0x0800 (IPv4)
 
 00,50,7f,05,7d,40,00,10,a4,86,2d,0b,08,00,45,00,00,34,1a,99,40,00,40,06,6d,f8,0a,21,b6,b2,c0,37,34,28,84,b3,00
 01,50,7f,05,7d,40,00,10,a4,86,2d,0b,08,00,45,00,00,34,1a,99,40,00,40,06,6d,f8,0a,21,b6,b2,c0,37,34,28,84,b3,00,50,b6,94,b2,9d,24,67,8f,57,80,10,20,94,59,1b,00,00,01,01,08,0a,00,6f,a7,46,01,26,fd,0a

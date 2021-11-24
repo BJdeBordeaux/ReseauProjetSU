@@ -21,5 +21,4 @@ Trame 1 :
 		Header checksum : 0x1daa
 		Adresse IP Source : 0xc0a80118 (192.168.1.24)
 		Adresse IP Destination : 0xe00000fb (224.0.0.251)
-octet non valide, interrupture d'analyse. Erreur se trouve a l'octet 48
 

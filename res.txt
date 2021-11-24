@@ -21,23 +21,6 @@ Trame 1 :
 		Header checksum : 0x6c14
 		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
 		Adresse IP Destination : 0xc0373428 (192.55.52.40)
-	TCP : 
-		Source port number : 0x4500(17664)
-		Destination port number : 0x0219(537)
-		Sequence Number : 0x17984000(395853824)
-		Acknowledgment number : 0x40066c14 (1074162708)
-		Transport Header Length: 0000(0)
-		Flags : 0xa21
-			Reserved : 101000
-			URG : 1
-			ACK : 0
-			PSH : 0
-			RST : 0
-			SYN : 0
-			FIN : 1
-		Window : 0xb6b2(46770)
-		Checksum : 0xc037(49207)
-		Urgent Pointer : 0x3428(13352)
 
 Trame 2 :
 
@@ -61,21 +44,4 @@ Trame 2 :
 		Header checksum : 0x6df8
 		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
 		Adresse IP Destination : 0xc0373428 (192.55.52.40)
-	TCP : 
-		Source port number : 0x4500(17664)
-		Destination port number : 0x0034(52)
-		Sequence Number : 0x17994000(395919360)
-		Acknowledgment number : 0x40066df8 (1074163192)
-		Transport Header Length: 0000(0)
-		Flags : 0xa21
-			Reserved : 101000
-			URG : 1
-			ACK : 0
-			PSH : 0
-			RST : 0
-			SYN : 0
-			FIN : 1
-		Window : 0xb6b2(46770)
-		Checksum : 0xc037(49207)
-		Urgent Pointer : 0x3428(13352)
 

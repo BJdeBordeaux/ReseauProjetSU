@@ -43,7 +43,10 @@ def octet_valide(octet):
 
 # Créer la structure générale des trames : créer une liste composée de listes et chaque liste est une trame
 def LtoLL(Liste):
-	Liste_brute = []
+	"""
+	list[str] -> list[list[str]]
+	"""
+	liste_brute = []
 	trame_courante = []
 	ignorer_ligne = False # il y a une erreur et la lecture de cette trame doit etre arretee
 	ignorer_element = False
@@ -57,7 +60,7 @@ def LtoLL(Liste):
 		if offset_valide(offset_de_la_ligne) :
 			if offset_en_hex == 0:
 				if not ignorer_ligne:
-					Liste_brute.append(trame_courante)
+					liste_brute.append(trame_courante)
 				trame_courante = []
 				ignorer_ligne = False
 				ignorer_element = False
@@ -73,7 +76,7 @@ def LtoLL(Liste):
 
 						if octet_invalide:
 							print("point d'arret, offset détecté : "
-								+ str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne + ", trame " + str(len(Liste_brute)))
+								+ str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne + ", trame " + str(len(liste_brute)))
 							erreur(trame_courante, "octet invalide")
 							trame_courante.append("-1")
 							
@@ -83,7 +86,7 @@ def LtoLL(Liste):
 							# une information pour indiquer une erreur dans le fichier
 							trame_courante.append("-2")
 							erreur(trame_courante, "ligne incomplète")
-						Liste_brute.append(trame_courante)
+						liste_brute.append(trame_courante)
 						ignorer_ligne = True
 
 				while(len(trame_courante) > offset_en_hex):
@@ -121,9 +124,9 @@ def LtoLL(Liste):
 								# print(hex(len(trame_courante)), element_courant)
 
 				if indice_ligne == len(Liste)-1:
-					Liste_brute.append(trame_courante)
-	del Liste_brute[0]
-	return Liste_brute
+					liste_brute.append(trame_courante)
+	del liste_brute[0]
+	return liste_brute
 
 def constructeur_chaine_caracteres(indentation, champs, valeur, interpretation = ""):
 	res = "\t"*indentation
@@ -176,6 +179,10 @@ def analyseETHERNET(Liste):
 # utiliser la meme structure pour faire la suite
 # commencer par 0 au lieu de 14
 def analyseIP(Liste):
+	"""
+	list[str] -> str
+	Transforme
+	"""
 	res = "\tIP : \n"
 
 	position_debut = 0
@@ -253,32 +260,32 @@ def analyse_IP_option(Liste):
 def analyse_UDP(Liste):
 	return ""
 
-# Renvoie un str représentant l'entête TCP
-# à modifier
-def analyseTCP(Liste):
-	a, i=analyseIP(Liste)
-	res = "\tTCP : \n"
-	res += "		Source port number : "+convertions.LStrToStr(Liste[0:2])+"("+convertions.LStrToPort(Liste[0:2])+")"+"\n"
-	res += "		Destination port number : "+convertions.LStrToStr(Liste[2:4])+"("+convertions.LStrToPort(Liste[2:4])+")"+"\n"
-	res += "		Sequence Number : "+convertions.LStrToStr(Liste[4:8])+"("+convertions.LStrToPort(Liste[4:8])+")"+"\n"
-	res += "		Acknowledgment number : "+convertions.LStrToStr(Liste[8:12])+" ("+convertions.LStrToPort(Liste[8:12])+")"+"\n"
-	Lb = convertions.LStrToBin(Liste[12:14])
-	res += "		Transport Header Length: "+Lb[0]+Lb[1]+Lb[2]+Lb[3]+"("+str(int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4)+")"+"\n"
-	res += "		Flags : 0x"+Liste[12][1]+Liste[13]+"\n"
-	res += "			Reserved : "
-	for j in range(4,10):
-		res+= Lb[j]
-	res += "\n"
-	res += "			URG : "+Lb[10]+"\n"
-	res += "			ACK : "+Lb[11]+"\n"
-	res += "			PSH : "+Lb[12]+"\n"
-	res += "			RST : "+Lb[13]+"\n"
-	res += "			SYN : "+Lb[14]+"\n"
-	res += "			FIN : "+Lb[15]+"\n"
-	res += "		Window : "+convertions.LStrToStr(Liste[14:16])+"("+convertions.LStrToPort(Liste[14:16])+")"+"\n"
-	res += "		Checksum : "+convertions.LStrToStr(Liste[16:18])+"("+convertions.LStrToPort(Liste[16:18])+")"+"\n"
-	res += "		Urgent Pointer : "+convertions.LStrToStr(Liste[18:20])+"("+convertions.LStrToPort(Liste[18:20])+")"+"\n"
-	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
+# # Renvoie un str représentant l'entête TCP
+# # à modifier
+# def analyseTCP(Liste):
+# 	a, i=analyseIP(Liste)
+# 	res = "\tTCP : \n"
+# 	res += "		Source port number : "+convertions.LStrToStr(Liste[0:2])+"("+convertions.LStrToPort(Liste[0:2])+")"+"\n"
+# 	res += "		Destination port number : "+convertions.LStrToStr(Liste[2:4])+"("+convertions.LStrToPort(Liste[2:4])+")"+"\n"
+# 	res += "		Sequence Number : "+convertions.LStrToStr(Liste[4:8])+"("+convertions.LStrToPort(Liste[4:8])+")"+"\n"
+# 	res += "		Acknowledgment number : "+convertions.LStrToStr(Liste[8:12])+" ("+convertions.LStrToPort(Liste[8:12])+")"+"\n"
+# 	Lb = convertions.LStrToBin(Liste[12:14])
+# 	res += "		Transport Header Length: "+Lb[0]+Lb[1]+Lb[2]+Lb[3]+"("+str(int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4)+")"+"\n"
+# 	res += "		Flags : 0x"+Liste[12][1]+Liste[13]+"\n"
+# 	res += "			Reserved : "
+# 	for j in range(4,10):
+# 		res+= Lb[j]
+# 	res += "\n"
+# 	res += "			URG : "+Lb[10]+"\n"
+# 	res += "			ACK : "+Lb[11]+"\n"
+# 	res += "			PSH : "+Lb[12]+"\n"
+# 	res += "			RST : "+Lb[13]+"\n"
+# 	res += "			SYN : "+Lb[14]+"\n"
+# 	res += "			FIN : "+Lb[15]+"\n"
+# 	res += "		Window : "+convertions.LStrToStr(Liste[14:16])+"("+convertions.LStrToPort(Liste[14:16])+")"+"\n"
+# 	res += "		Checksum : "+convertions.LStrToStr(Liste[16:18])+"("+convertions.LStrToPort(Liste[16:18])+")"+"\n"
+# 	res += "		Urgent Pointer : "+convertions.LStrToStr(Liste[18:20])+"("+convertions.LStrToPort(Liste[18:20])+")"+"\n"
+# 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
 
 # Renvoie l'option representant l'entete DNS
 # à écrire
