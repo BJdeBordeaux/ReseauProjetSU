@@ -26,7 +26,7 @@ for e in L:
 		if e[i] == ' ':
 			indice_premier_espace = i
 			break
-	if fonctions.formatValideOffset(e[0:indice_premier_espace]):
+	if fonctions.offset_valide(e[0:indice_premier_espace]):
 		LL.append(e.split())
 
 # Retire les offset
@@ -40,7 +40,7 @@ for i in range(len(LL)):
 
 	#afficher information d'erreur
 	information_erreur = ""
-	if(not fonctions.formatValideByte(LL[i][-1])):
+	if(not fonctions.octet_valide(LL[i][-1])):
 		print(LL[i][-1])
 		if LL[i][-1] in convertions.dico_type_erreur:
 			information_erreur = convertions.dico_type_erreur.get(LL[i][-1])

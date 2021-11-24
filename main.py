@@ -12,26 +12,26 @@ except:
     exit()
 
 d = open(sys.argv[2], "w")
-L = list()
+liste_brut = list()
 
 # Construit une liste à partir d'un fichier text, ligne par ligne
 for line in f:
-	L.extend(line.split("\t"))
+	liste_brut.extend(line.split("\t"))
 
 # Construit la structure générale du programme, une liste composée de listes, dont chaque représente une trame (sans commentaire)
-LL = list()
-for e in L:
+liste = list()
+for ligne in liste_brut:
 	indice_premier_espace = 0
-	for i in range(len(e)):
-		if e[i] == ' ':
+	for i in range(len(ligne)):
+		if ligne[i] == ' ':
 			indice_premier_espace = i
 			break
-	if fonctions.formatValideOffset(e[0:indice_premier_espace]):
-		LL.append(e.split())
+	if fonctions.offset_valide(ligne[0:indice_premier_espace]):
+		liste.append(ligne.split())
 
 # Retire les offset
-# LL = fonctions.LLtoLLclean(fonctions.LtoLL(LL))
-LL = fonctions.LtoLL(LL)
+# liste = fonctions.LLtoLLclean(fonctions.LtoLL(liste))
+liste = fonctions.LtoLL(liste)
 res = ""
 
 # declaration de variables
@@ -42,43 +42,41 @@ longueur_UDP = 8
 longueur_TCP = 20
 
 # Affiche les trames, et les entêtes qui correspondent
-for i in range(len(LL)):
-	res += "\nTrame "+str(i+1)+" :\n"
+for index_trame in range(len(liste)):
+	res += "\nTrame "+str(index_trame+1)+" :\n"
 
 	#afficher information d'erreur
 	information_erreur = ""
-	if(not fonctions.formatValideByte(LL[i][-1])):
-		if LL[i][-1] in convertions.dico_type_erreur:
-			information_erreur = convertions.dico_type_erreur.get(LL[i][-1])
+	if(not fonctions.octet_valide(liste[index_trame][-1])):
+		if liste[index_trame][-1] in convertions.dico_type_erreur:
+			information_erreur = convertions.dico_type_erreur.get(liste[index_trame][-1])
 		else: 
 			information_erreur = "Erreur inconnue"
-		information_erreur += ", interrupture d'analyse."
+		information_erreur += ", interrupture d'analyse. "
+		information_erreur += "Erreur se trouve a l'octet " + str(len(liste[index_trame])+1)
 		information_erreur += "\n"
-		LL[i].pop()
+		liste[index_trame].pop()
 
 	position_courante = 0
-	res += "\n"+fonctions.analyseETHERNET(LL[i][position_courante:])
+	res += "\n"+fonctions.analyseETHERNET(liste[index_trame][position_courante:])
 	position_courante = longueur_ethernet
 	prochain_protocol = ""
 	
-	if len(LL[i]) > position_courante:
-		res_annalyse_IP = fonctions.analyseIP(LL[i][position_courante:])
+	if len(liste[index_trame]) > position_courante:
+		res_annalyse_IP = fonctions.analyseIP(liste[index_trame][position_courante:])
 		res += res_annalyse_IP[0]
 		position_courante += longueur_IP
-		if LL[i][position_courante][1] == 'f':
-			res += fonctions.analyse_IP_option(LL[i][position_courante:])
+		if liste[index_trame][position_courante][1] == 'f':
+			res += fonctions.analyse_IP_option(liste[index_trame][position_courante:])
 
-		if len(LL[i]) > position_courante:
-			if prochain_protocol == "TCP":
-				res += fonctions.analyseTCP(LL[i])[0]
-				position_courante += longueur_TCP
-			elif prochain_protocol == "UDP":
-				res += fonctions.analyse_UDP(LL[i][position_courante:])[0]
+		if len(liste[index_trame]) > position_courante:
+			if prochain_protocol == "UDP":
+				res += fonctions.analyse_UDP(liste[index_trame][position_courante:])[0]
 				position_courante += longueur_UDP
 
-			if len(LL[i]) > position_courante:
+			if len(liste[index_trame]) > position_courante:
 				print("analyse ???")
-			# if len(LL[i]) > position_courante and LL[i][len(LL[i])-4:len(LL[i])] == ["0d", "0a", "0d", "0a"]:
+			# if len(liste[index_trame]) > position_courante and liste[index_trame][len(liste[index_trame])-4:len(liste[index_trame])] == ["0d", "0a", "0d", "0a"]:
 	
 	res += information_erreur
 

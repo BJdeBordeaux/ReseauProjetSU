@@ -5,7 +5,7 @@ import convertions
 def erreur(pos):
 	i = len(pos)-1
 	while i>=0:
-		if formatValideOffset(pos[i]):
+		if offset_valide(pos[i]):
 			print("erreur ", pos[i])
 			exit()
 		i-=1
@@ -21,7 +21,7 @@ def est_hex(cara):
 	return True
 
 # Valide le format des offset de la trame
-def formatValideOffset(offset):
+def offset_valide(offset):
 	if len(offset) < 2:
 		return False
 
@@ -34,7 +34,7 @@ def formatValideOffset(offset):
 
 
 # Valide le format des octets de la trame
-def formatValideByte(octet):
+def octet_valide(octet):
 	if len(octet) != 2:
 		return False
 
@@ -54,7 +54,7 @@ def LtoLL(L):
 		# si elle commence par un offset 0, on crée une nouvelle liste
 		# et met la liste précédente dans la liste extérieure
 		premier_element = L[i][0]
-		if formatValideOffset(premier_element) and int(premier_element, base = 16) == 0:
+		if offset_valide(premier_element) and int(premier_element, base = 16) == 0:
 			LL.append(tmp)
 			tmp = []
 			# indice de l'element dans la ligne
@@ -65,7 +65,7 @@ def LtoLL(L):
 			indice_element += 1
 
 			for x in range(int(L[i+1][0], base=16)-int(L[i][0], base=16)+1):
-				if formatValideByte(L[i][x]) or formatValideOffset(L[i][x]):
+				if octet_valide(L[i][x]) or offset_valide(L[i][x]):
 					tmp.append(L[i][x])
 			if len(tmp) != int(L[i+1][0], base=16)+indice_element:
 				print(len(tmp), int(L[i+1][0], base=16)+indice_element)
@@ -73,7 +73,7 @@ def LtoLL(L):
 		else:
 			indice_element+=1
 			for x in range(len(L[i])):
-				if formatValideByte(L[i][x]) or formatValideOffset(L[i][x]):
+				if octet_valide(L[i][x]) or offset_valide(L[i][x]):
 					tmp.append(L[i][x])
 
 		if i == len(L)-1:
@@ -88,7 +88,7 @@ def LLtoLLclean(LL):
 	tmp = []
 	for i in range(len(LL)):
 		for j in range(len(LL[i])):
-			if formatValideByte(LL[i][j]):
+			if octet_valide(LL[i][j]):
 				tmp.append(LL[i][j])
 
 		res.append(tmp)

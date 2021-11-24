@@ -21,7 +21,7 @@ for line in f:
 # Construit la structure générale du programme, une liste composée de listes, dont chaque représente une trame (sans commentaire)
 LL = list()
 for e in L:
-	if fonctions.formatValideOffset(e[0:4]):
+	if fonctions.offset_valide(e[0:4]):
 		LL.append(e.split())
 # list[list[octet]]
 # list[trame[octet]]
