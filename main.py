@@ -6,17 +6,17 @@ if len(sys.argv) != 3: # vérifier s'il y a 2 arguments :  fichiers source et de
 
 # Vérifier l'existence du fichier source
 try:
-	f = open(sys.argv[1], "r")
+	fichier_source = open(sys.argv[1], "r")
 except:
     print("Erreur: Le fichier source n'existe pas.")
     exit()
 
-d = open(sys.argv[2], "w")
+fichier_destination = open(sys.argv[2], "w")
 liste_brut = list()
 
 # Construit une liste brute à partir d'un fichier text
 # les éléments sont des string représentant une ligne
-for line in f:
+for line in fichier_source:
 	liste_brut.extend(line.split("\t"))
 
 # Construire une liste de listes, dont chacun représente une trame
@@ -89,8 +89,8 @@ for index_trame in range(len(liste)):
 	res += information_erreur
 
 # Ecrire le trame dans le fichier destination
-d.write(res+"\n")
+fichier_destination.write(res+"\n")
 
 # Ferme les fichiers
-d.close()
-f.close()
+fichier_destination.close()
+fichier_source.close()
