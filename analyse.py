@@ -213,7 +213,8 @@ def analyse_DNS(Liste):
 	res += tools.constructeur_chaine_caracteres(4, "Name Lenght" , lenght)
 	res += tools.constructeur_chaine_caracteres(4, "Label Count" , label)
 	res += tools.constructeur_chaine_caracteres(4, "Class" , "IN")
-	res += "\t\tAnswers: \n"
+	if n_answers >0:	
+		res += "\t\tAnswers: \n"
 	nombre =1
 	for i in range(n_answers):
 		aux=""
@@ -222,8 +223,8 @@ def analyse_DNS(Liste):
 		position_debut=ret[1]-1
 		position_fin=ret[2]
 		res+=ret[0]
-	
-	res += "\t\tAuthoritative nameservers: \n"
+	if n_authority > 0:
+		res += "\t\tAuthoritative nameservers: \n"
 	for i in range(n_authority):
 		aux=""
 		ret=DNS_Authoritative(Liste, nombre, position_debut,position_fin, aux)
