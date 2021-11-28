@@ -2,6 +2,46 @@ dico_type_eternet = {
 	"0800" : "IPv4",
 }
 
+dico_type_dns_QR = {
+	"0" : "Query",
+	"1" : "Response",
+
+}
+
+dico_type_dns_type = {
+	"01" : "A",
+	"02" : "NS",
+	"05" : "CNAME",
+	"0f" : "MX",
+	"1c" : "AAAA",
+	"06" : "SOA",
+}
+
+dico_type_dns_typen = {
+	"A" :"Host Adress",
+	"NS" : "Name Server",
+	"CNAME" : "Canonical Name for an alias",
+	"MX" : "Mail Exchange",
+	"AAAA" : "IPV6 Adress",
+	"SOA" : "Start Of a zone of Authority",
+}
+
+dico_type_dns_AA = {
+	"0" : "Server is not an authority for domain",
+	"1" : "Server is not an authority for domain",
+}
+
+dico_type_dns_RD = {
+	"0" : "Do not query recursively",
+	"1" : "Do query recursively",
+}
+
+
+dico_type_dns_RA = {
+	"0" : "Server can not do recursive queries",
+	"1" : "Server can do recursive queries",
+}
+
 dico_type_erreur = {
 	"-1" : "octet non valide",
 	"-2" : "ligne incomplète"
@@ -12,6 +52,15 @@ dico_type_ip_protocol = {
 	"06" : "TCP",
 	"01" : "ICMP",
 }
+
+def sec_to_hours(seconds):
+    a=str(seconds//3600)
+    b=str((seconds%3600)//60)
+    c=str((seconds%3600)%60)
+    d=a+ "hours, "+b+"minutes, "+c+"seconds"
+    return d
+
+
 
 def liste_hex_2_dec(Liste):
 	return str(int("".join(Liste), base = 16))
@@ -167,7 +216,7 @@ def constructeur_chaine_caracteres(indentation, champs, valeur, interpretation =
 	"""
 	res = "\t"*indentation
 	res += champs
-	res += " : "
+	res += ": "
 	res += str(valeur)
 	if interpretation != "":
 		res += " (" + interpretation + ")"
