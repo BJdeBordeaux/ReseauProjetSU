@@ -71,7 +71,7 @@ for index_trame in range(len(liste)):
 			if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
 				res += "Longueur IP non valide. Passe à la trame prochaine.\n"
 				continue
-			if liste[index_trame][position_courante][1] == 'f':
+			if liste[index_trame][position_courante][1].lower() == 'f':
 				res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
 				position_courante += longueur_IP_option
 
