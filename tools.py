@@ -2,6 +2,12 @@ dico_type_eternet = {
 	"0800" : "IPv4",
 }
 
+dico_type_udp = {
+	"0035" : "DNS",
+	"0043" : "DHCP",
+	"0044" : "DHCP",
+}
+
 dico_type_dns_QR = {
 	"0" : "Query",
 	"1" : "Response",
