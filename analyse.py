@@ -84,7 +84,7 @@ def analyse_IP(Liste):
 			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, tools.dico_type_ip_protocol.get(protocol_hex))
 		else: 
 			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, "inconnu")
-	
+		proto = tools.dico_type_ip_protocol.get(protocol_hex)
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -102,7 +102,7 @@ def analyse_IP(Liste):
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Destination", "0x" + "".join(Liste[position_debut:position_fin]), ".".join(ip))	
-	return res
+	return res, proto
 
 # à écrire
 def analyse_IP_option(Liste):
@@ -118,12 +118,15 @@ def analyse_UDP(Liste):
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Source Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+		if tools.dico_type_udp.get("".join(Liste[position_debut:position_fin])) is not None:
+			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
+		else: 
+			app="inconnu"
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Destination Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -133,7 +136,7 @@ def analyse_UDP(Liste):
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Checksum","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	return res
+	return res, app
 
 # à écrire
 def analyse_DNS(Liste):
@@ -228,6 +231,14 @@ def analyse_DNS(Liste):
 	for i in range(n_authority):
 		aux=""
 		ret=DNS_Authoritative(Liste, nombre, position_debut,position_fin, aux)
+		position_debut=ret[1]-1
+		position_fin=ret[2]
+		res+=ret[0]
+	if n_additional > 0:	
+		res += "\t\tAdditional informations: \n"
+	for i in range(n_additional):
+		aux=""
+		ret=DNS_Answer(Liste, nombre, position_debut,position_fin, aux)
 		position_debut=ret[1]-1
 		position_fin=ret[2]
 		res+=ret[0]
@@ -369,6 +380,7 @@ def cnamef(Liste, position_debut,position_fin, res):
 	name=""
 	position_debut += 1
 	position_fin = position_debut + 1
+	
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
 		position_debut = position_fin
 		position_fin = position_debut + 1
@@ -399,10 +411,10 @@ def cnamef(Liste, position_debut,position_fin, res):
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
-		#position_debut = position_fin
-		#position_fin = position_debut + 1
-	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
-		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
+		position_debutt = position_fin
+		position_fint = position_debutt + 1
+	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou pas
+		if int(tools.liste_hex_2_dec(Liste[position_debutt:position_fint])) != 0 and int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		#else:
 			#position_debut = position_fin
@@ -413,8 +425,10 @@ def cnamef(Liste, position_debut,position_fin, res):
 def mnamef(Liste, position_debut,position_fin, res):
 	name=""
 	#position_debut += 1
-	#position_fin = position_debut + 1
-	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
+	#position_fin = position_debut +1
+	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
+		# Cas spécial ou deux noms se suivent il faut faire en sorte que l'on a pas '00' avant d'entrer dans la boucle 
+		position_fin = position_debut +1
 		position_debut = position_fin
 		position_fin = position_debut + 1
 		if Liste[position_debut:position_fin][0] == "c0":
@@ -446,8 +460,10 @@ def mnamef(Liste, position_debut,position_fin, res):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
 		#position_debut = position_fin
 		#position_fin = position_debut + 1
+		position_debutt = position_fin
+		position_fint = position_debutt + 1
 	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
-		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
+		if int(tools.liste_hex_2_dec(Liste[position_debutt:position_fint])) != 0 and int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		#else:
 			#position_debut = position_fin
@@ -543,10 +559,12 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		dl = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	cname=""
+	
 	ret1 =cnamef(Liste, position_debut,position_fin,cname)
 	position_debut=ret1[1]
 	position_fin=ret1[2]
 	cname=""
+	position_fin = position_fin + 1
 	ret2 =mnamef(Liste, position_debut,position_fin,cname)
 	position_debut=ret2[1]
 	position_fin=ret2[2]
