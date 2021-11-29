@@ -6,17 +6,17 @@ if len(sys.argv) != 3: # vérifier s'il y a 2 arguments :  fichiers source et de
 
 # Vérifier l'existence du fichier source
 try:
-	fichier_source = open(sys.argv[1], "r")
+	f = open(sys.argv[1], "r")
 except:
     print("Erreur: Le fichier source n'existe pas.")
     exit()
 
-fichier_destination = open(sys.argv[2], "w")
+d = open(sys.argv[2], "w")
 liste_brut = list()
 
 # Construit une liste brute à partir d'un fichier text
 # les éléments sont des string représentant une ligne
-for line in fichier_source:
+for line in f:
 	liste_brut.extend(line.split("\t"))
 
 # Construire une liste de listes, dont chacun représente une trame
@@ -63,34 +63,37 @@ for index_trame in range(len(liste)):
 	# analyse IP
 	if len(liste[index_trame]) > position_courante:
 		res_annalyse_IP = analyse.analyse_IP(liste[index_trame][position_courante:])
-		res += res_annalyse_IP
+		res += res_annalyse_IP[0]
 		position_courante += longueur_IP
+		prochain_protocol = res_annalyse_IP[1]
 
 		# analyse option IP
 		if len(liste[index_trame]) > position_courante:
 			if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
 				res += "Longueur IP non valide. Passe à la trame prochaine.\n"
 				continue
-			if liste[index_trame][position_courante][1].lower() == 'f':
+			if liste[index_trame][position_courante][1] == 'f':
 				res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
 				position_courante += longueur_IP_option
 
 		# analyse UDP
 		if len(liste[index_trame]) > position_courante:
 			if prochain_protocol == "UDP":
-				res += analyse.analyse_UDP(liste[index_trame][position_courante:])[0]
+				res_annalyse_UDP = analyse.analyse_UDP(liste[index_trame][position_courante:])
+				res+= res_annalyse_UDP[0]
 				position_courante += longueur_UDP
-
+				prochain_app =res_annalyse_UDP[1]
 			# if len(liste[index_trame]) > position_courante:
 				# print("analyse ???")
 			# if len(liste[index_trame]) > position_courante and liste[index_trame][len(liste[index_trame])-4:len(liste[index_trame])] == ["0d", "0a", "0d", "0a"]:
-	
+				if prochain_app == "DNS":
+					res += analyse.analyse_DNS(liste[index_trame][position_courante:])
 	# ajout d'information d'erreur à la fin
 	res += information_erreur
 
 # Ecrire le trame dans le fichier destination
-fichier_destination.write(res+"\n")
+d.write(res+"\n")
 
 # Ferme les fichiers
-fichier_destination.close()
-fichier_source.close()
+d.close()
+f.close()
