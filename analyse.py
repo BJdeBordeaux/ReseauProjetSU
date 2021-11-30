@@ -38,7 +38,8 @@ def analyse_IP(Liste):
 	Renvoyer un str représentant l'entête IP
 	"""
 	res = "\tIP : \n"
-
+	
+# Lecture de la version et du header length
 	position_debut = 0
 	position_fin = 1
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -46,21 +47,25 @@ def analyse_IP(Liste):
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Header length", "0x" + Liste[position_debut:position_fin][0][1], str(int(Liste[position_debut:position_fin][0][1], base = 16)*4))
 
+# Lecture du type of service
 	position_debut = position_fin
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Type of service", "0x" + Liste[position_debut:position_fin][0])
 
+# Lecture du total length
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Total Length", "0x" + "".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")	
-	
+
+# Lecture du Identifier
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Identifier", "0x" + "".join(Liste[position_debut:position_fin]))	
-	
+
+# Lecture de Reserve, DF, MF, Fragment offset
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -70,12 +75,14 @@ def analyse_IP(Liste):
 		res += tools.constructeur_chaine_caracteres(3, "DF", Lb[1])
 		res += tools.constructeur_chaine_caracteres(3, "MF", Lb[2])
 		res += tools.constructeur_chaine_caracteres(3, "Fragment offset", str(hex(int(Lb[3:], base = 2))), str(int(Lb[3:], base = 2)*8) + " octets")
-	
+
+# Lecture du TTL
 	position_debut = position_fin
 	position_fin = 9
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Time To Live", "0x" + "".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+
+
 	position_debut = position_fin
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -85,18 +92,21 @@ def analyse_IP(Liste):
 		else: 
 			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, "inconnu")
 		proto = tools.dico_type_ip_protocol.get(protocol_hex)
+		
+# Lecture du header checksum
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Header checksum", "0x" + "".join(Liste[position_debut:position_fin]))
-	
+
+# Lecture de l'adresse IP Source
 	position_debut = position_fin
 	position_fin = 16
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Source", "0x" + "".join(Liste[position_debut:position_fin]),".".join(ip))
 
-
+# Lecture de l'adresse IP Destination
 	position_debut = position_fin
 	position_fin = 20
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
@@ -113,7 +123,8 @@ def analyse_IP_option(Liste):
 # à écrire
 def analyse_UDP(Liste):
 	res = "\tUDP : \n"
-	
+
+# Lecture du Port source
 	position_debut = 0
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -122,16 +133,19 @@ def analyse_UDP(Liste):
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
 		else: 
 			app="inconnu"
+# Lecture du Port destination
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Destination Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 
+# Lecture du Length
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Lenght","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")
-	
+
+# Lecture du checksum	
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
