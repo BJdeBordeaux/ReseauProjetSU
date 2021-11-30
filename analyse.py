@@ -132,8 +132,7 @@ def analyse_UDP(Liste):
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
-		res += tools.constructeur_chaine_caracteres(2, "Lenght","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")
-	
+		res += tools.constructeur_chaine_caracteres(2, "Lenght","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")		
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -258,6 +257,34 @@ def analyse_DNS(Liste):
 # à écrire
 def analyse_DHCP(Liste):
 	return ""
+
+
+# # Renvoie un str représentant l'entête TCP
+# # à modifier
+# def analyseTCP(Liste):
+# 	a, i=analyse_IP(Liste)
+# 	res = "\tTCP : \n"
+# 	res += "		Source port number : "+tools.LStrToStr(Liste[0:2])+"("+tools.LStrToPort(Liste[0:2])+")"+"\n"
+# 	res += "		Destination port number : "+tools.LStrToStr(Liste[2:4])+"("+tools.LStrToPort(Liste[2:4])+")"+"\n"
+# 	res += "		Sequence Number : "+tools.LStrToStr(Liste[4:8])+"("+tools.LStrToPort(Liste[4:8])+")"+"\n"
+# 	res += "		Acknowledgment number : "+tools.LStrToStr(Liste[8:12])+" ("+tools.LStrToPort(Liste[8:12])+")"+"\n"
+# 	Lb = tools.LStrToBin(Liste[12:14])
+# 	res += "		Transport Header Length: "+Lb[0]+Lb[1]+Lb[2]+Lb[3]+"("+str(int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4)+")"+"\n"
+# 	res += "		Flags : 0x"+Liste[12][1]+Liste[13]+"\n"
+# 	res += "			Reserved : "
+# 	for j in range(4,10):
+# 		res+= Lb[j]
+# 	res += "\n"
+# 	res += "			URG : "+Lb[10]+"\n"
+# 	res += "			ACK : "+Lb[11]+"\n"
+# 	res += "			PSH : "+Lb[12]+"\n"
+# 	res += "			RST : "+Lb[13]+"\n"
+# 	res += "			SYN : "+Lb[14]+"\n"
+# 	res += "			FIN : "+Lb[15]+"\n"
+# 	res += "		Window : "+tools.LStrToStr(Liste[14:16])+"("+tools.LStrToPort(Liste[14:16])+")"+"\n"
+# 	res += "		Checksum : "+tools.LStrToStr(Liste[16:18])+"("+tools.LStrToPort(Liste[16:18])+")"+"\n"
+# 	res += "		Urgent Pointer : "+tools.LStrToStr(Liste[18:20])+"("+tools.LStrToPort(Liste[18:20])+")"+"\n"
+# 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
 
 def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 	name =''

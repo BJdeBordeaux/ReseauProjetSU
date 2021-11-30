@@ -111,7 +111,7 @@ Trame 1 :
 				Time to live: 3 (0hours, 0minutes, 3seconds)
 				Data lenght: 4
 				A: 40.101.136.242
-
+DNS
 Trame 2 :
 
 	ETHERNET :
@@ -182,4 +182,4 @@ Trame 2 :
 				Retry Interval: 900 (0hours, 15minutes, 0seconds)
 				Expire Limit: 1209600 (336hours, 0minutes, 0seconds)
 				Minimum TTL: 86400 (24hours, 0minutes, 0seconds)
-
+DNS
