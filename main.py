@@ -83,13 +83,12 @@ for index_trame in range(len(liste)):
 				res+= res_annalyse_UDP[0]
 				position_courante += longueur_UDP
 				prochain_app =res_annalyse_UDP[1]
-			# if len(liste[index_trame]) > position_courante:
-				# print("analyse ???")
-			# if len(liste[index_trame]) > position_courante and liste[index_trame][len(liste[index_trame])-4:len(liste[index_trame])] == ["0d", "0a", "0d", "0a"]:
+				
 				if prochain_app == "DNS":
 					res += analyse.analyse_DNS(liste[index_trame][position_courante:])
 	# ajout d'information d'erreur à la fin
 	res += information_erreur
+	res += prochain_app
 
 # Ecrire le trame dans le fichier destination
 d.write(res+"\n")

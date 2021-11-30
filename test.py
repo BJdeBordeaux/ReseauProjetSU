@@ -26,12 +26,11 @@ for e in L:
 		if e[i] == ' ':
 			indice_premier_espace = i
 			break
-	if analyse.offset_valide(e[0:indice_premier_espace]):
+	if tools.offset_valide(e[0:indice_premier_espace]):
 		LL.append(e.split())
 
 # Retire les offset
-# LL = analyse.LLtoLLclean(analyse.liste_brute_2_liste(LL))
-LL = analyse.liste_brute_2_liste(LL)
+LL = tools.liste_brute_2_liste(LL)
 res = ""
 
 # Affiche les trames, et les entêtes qui correspondent
@@ -40,7 +39,7 @@ for i in range(len(LL)):
 
 	#afficher information d'erreur
 	information_erreur = ""
-	if(not analyse.octet_valide(LL[i][-1])):
+	if(not tools.octet_valide(LL[i][-1])):
 		print(LL[i][-1])
 		if LL[i][-1] in tools.dico_type_erreur:
 			information_erreur = tools.dico_type_erreur.get(LL[i][-1])
@@ -70,8 +69,9 @@ res = ""
 for l in LL :
     res += ",".join(l)
     res += "\n"
+	
 d.write(res+"\n")
-
+d.wirte(str(len(LL)))
 # Ferme les fichiers
 d.close()
 f.close()

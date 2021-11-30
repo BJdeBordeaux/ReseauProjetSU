@@ -21,4 +21,53 @@ Trame 1 :
 		Header checksum: 0xb3ed
 		Adresse IP Source: 0xc0a801fe (192.168.1.254)
 		Adresse IP Destination: 0xc0a80123 (192.168.1.35)
-
+	UDP : 
+		Source Port: 0x0035 (53)
+		Destination Port: 0xdf59 (57177)
+		Lenght: 0x0089 (137 octets)
+		Checksum: 0xe2d7 (58071)
+	DNS : 
+		Transaction ID: 0x6315 (25365)
+		Flags: 0x8180
+			1... .... .... ....	= Response: 1 (Response)
+			.000 0... .... ....	= OPCode: 0 (Standard query)
+			.... .0.. .... ....	= Authoritative Answer: 0 (Server is not an authority for domain)
+			.... ..0. .... ....	= Truncated: 0
+			.... ...1 .... ....	= Recursion Desired: 1 (Do query recursively)
+			.... .... 1... ....	= Recursion Available: 1 (Server can do recursive queries)
+			.... .... .000 ....	= Z: 0 (Reserved)
+			.... .... .... 0000	= Reply Code: 0 (No Error)
+		Questions: 0x0001 (1)
+		Answers: 0x0002 (2)
+		Authority: 0x0000 (0)
+		Additional: 0x0001 (1)
+		Queries: 
+			sts.online.visualstudio.com:  type A, class IN
+				Name: sts.online.visualstudio.com
+				Name Lenght: 26
+				Label Count: 4
+				Class: IN
+		Answers: 
+			sts.online.visualstudio.com:  type CNAME, class IN, cname vsclk-online-prod-rel-tm.trafficmanager.net
+				Name: sts.online.visualstudio.com
+				Type: CNAME (Canonical Name for an alias)
+				Class: 0x0001 (Internet)
+				Time to live: 214 (0hours, 3minutes, 34seconds)
+				Data lenght: 45
+				CNAME: vsclk-online-prod-rel-tm.trafficmanager.net
+			vsclk-online-prod-rel-tm.trafficmanager.net:  type A, class IN, addr 40.68.78.177
+				Name: vsclk-online-prod-rel-tm.trafficmanager.net
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 300 (0hours, 5minutes, 0seconds)
+				Data lenght: 4
+				A: 40.68.78.177
+		Additional informations: 
+			:  type None, class IN,  
+				Name: 
+				Type: None (None)
+				Class: 0x2905 (Internet)
+				Time to live: 3221225472 (894784hours, 51minutes, 12seconds)
+				Data lenght: 0
+				None: 
+DNS
