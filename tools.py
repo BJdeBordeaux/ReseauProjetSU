@@ -59,6 +59,11 @@ dico_type_ip_protocol = {
 	"01" : "ICMP",
 }
 
+dico_opcod_dhcp = {
+	"01" : "Boot Request",
+	"02" : "Boot Reply",
+}
+
 def sec_to_hours(seconds):
     a=str(seconds//3600)
     b=str((seconds%3600)//60)

@@ -2,46 +2,241 @@
 Trame 1 :
 
 	ETHERNET :
-		Adresse Mac Destination : 00:50:7f:05:7d:40
-		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Protocol : 0x0800 (IPv4)
+		Adresse Mac Destination: 08:00:27:43:73:bc
+		Adresse Mac Source: 52:54:00:12:35:02
+		Protocol: 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (IPv4)
-		Header length : 0x5 (20)
-		Type of service : 0x00
-		Total Length : 0x0219 (537 octets)
-		Identifier : 0x1798
-		Flags : 0x4000
-			Reserve : 0
-			DF : 1
-			MF : 0
-			Fragment offset : 0x0 (0 octets)
-		Time To Live : 0x40 (64)
-		Protocol : 0x06 (TCP)
-		Header checksum : 0x6c14
-		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
-		Adresse IP Destination : 0xc0373428 (192.55.52.40)
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x00e1 (225 octets)
+		Identifier: 0x5c8e
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x40 (64)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0xb86c
+		Adresse IP Source: 0x59020001 (89.2.0.1)
+		Adresse IP Destination: 0x0a00020f (10.0.2.15)
+	UDP : 
+		Source Port: 0x0035 (53)
+		Destination Port: 0x8d26 (36134)
+		Lenght: 0x00cd (205 octets)
+		Checksum: 0x6f7c (28540)
+	DNS : 
+		Transaction ID: 0x6644 (26180)
+		Flags: 0x8180
+			1... .... .... ....	= Response: 1 (Response)
+			.000 0... .... ....	= OPCode: 0 (Standard query)
+			.... .0.. .... ....	= Authoritative Answer: 0 (Server is not an authority for domain)
+			.... ..0. .... ....	= Truncated: 0
+			.... ...1 .... ....	= Recursion Desired: 1 (Do query recursively)
+			.... .... 1... ....	= Recursion Available: 1 (Server can do recursive queries)
+			.... .... .000 ....	= Z: 0 (Reserved)
+			.... .... .... 0000	= Reply Code: 0 (No Error)
+		Questions: 0x0001 (1)
+		Answers: 0x0009 (9)
+		Authority: 0x0000 (0)
+		Additional: 0x0000 (0)
+		Queries: 
+			outlook.live.com:  type A, class IN
+				Name: outlook.live.com
+				Name Lenght: 15
+				Label Count: 3
+				Class: IN
+		Answers: 
+			outlook.live.com:  type CNAME, class IN, cname outlook.ha.office365.com
+				Name: outlook.live.com
+				Type: CNAME (Canonical Name for an alias)
+				Class: 0x0001 (Internet)
+				Time to live: 47 (0hours, 0minutes, 47seconds)
+				Data lenght: 23
+				CNAME: outlook.ha.office365.com
+			outlook.ha.office365.:  type A, class IN, addr 40.101.137.34
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 40.101.137.34
+			outlook.ha.office365.:  type A, class IN, addr 52.97.233.34
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 52.97.233.34
+			outlook.ha.office365.:  type A, class IN, addr 40.101.138.2
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 40.101.138.2
+			outlook.ha.office365.:  type A, class IN, addr 52.97.233.2
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 52.97.233.2
+			outlook.ha.office365.:  type A, class IN, addr 40.101.137.50
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 40.101.137.50
+			outlook.ha.office365.:  type A, class IN, addr 52.97.233.50
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 52.97.233.50
+			outlook.ha.office365.:  type A, class IN, addr 40.101.136.2
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 40.101.136.2
+			outlook.ha.office365.:  type A, class IN, addr 40.101.136.242
+				Name: outlook.ha.office365.
+				Type: A (Host Adress)
+				Class: 0x0001 (Internet)
+				Time to live: 3 (0hours, 0minutes, 3seconds)
+				Data lenght: 4
+				A: 40.101.136.242
 
 Trame 2 :
 
 	ETHERNET :
-		Adresse Mac Destination : 00:50:7f:05:7d:40
-		Adresse Mac Source : 00:10:a4:86:2d:0b
-		Protocol : 0x0800 (IPv4)
+		Adresse Mac Destination: 08:00:27:43:73:bc
+		Adresse Mac Source: 52:54:00:12:35:02
+		Protocol: 0x0800 (IPv4)
 	IP : 
-		Version : 0x4 (IPv4)
-		Header length : 0x5 (20)
-		Type of service : 0x00
-		Total Length : 0x0034 (52 octets)
-		Identifier : 0x1799
-		Flags : 0x4000
-			Reserve : 0
-			DF : 1
-			MF : 0
-			Fragment offset : 0x0 (0 octets)
-		Time To Live : 0x40 (64)
-		Protocol : 0x06 (TCP)
-		Header checksum : 0x6df8
-		Adresse IP Source : 0x0a21b6b2 (10.33.182.178)
-		Adresse IP Destination : 0xc0373428 (192.55.52.40)
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x00bf (191 octets)
+		Identifier: 0x0289
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x40 (64)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x1a56
+		Adresse IP Source: 0xc0a89098 (192.168.144.152)
+		Adresse IP Destination: 0x0a00020f (10.0.2.15)
+	UDP : 
+		Source Port: 0x0035 (53)
+		Destination Port: 0xca93 (51859)
+		Lenght: 0x00ab (171 octets)
+		Checksum: 0x58ed (22765)
+	DNS : 
+		Transaction ID: 0x8530 (34096)
+		Flags: 0x8180
+			1... .... .... ....	= Response: 1 (Response)
+			.000 0... .... ....	= OPCode: 0 (Standard query)
+			.... .0.. .... ....	= Authoritative Answer: 0 (Server is not an authority for domain)
+			.... ..0. .... ....	= Truncated: 0
+			.... ...1 .... ....	= Recursion Desired: 1 (Do query recursively)
+			.... .... 1... ....	= Recursion Available: 1 (Server can do recursive queries)
+			.... .... .000 ....	= Z: 0 (Reserved)
+			.... .... .... 0000	= Reply Code: 0 (No Error)
+		Questions: 0x0001 (1)
+		Answers: 0x0001 (1)
+		Authority: 0x0001 (1)
+		Additional: 0x0000 (0)
+		Queries: 
+			push.services.mozilla.com:  type AAAA, class IN
+				Name: push.services.mozilla.com
+				Name Lenght: 24
+				Label Count: 4
+				Class: IN
+		Answers: 
+			push.services.mozilla.com:  type CNAME, class IN, cname autopush.prod.mozaws.net
+				Name: push.services.mozilla.com
+				Type: CNAME (Canonical Name for an alias)
+				Class: 0x0001 (Internet)
+				Time to live: 2345 (0hours, 39minutes, 5seconds)
+				Data lenght: 26
+				CNAME: autopush.prod.mozaws.net
+		Authoritative nameservers: 
+			prod.mozaws.net:  type SOA, class IN, mname ns-1260.awsdns-29.org
+				Name: prod.mozaws.net
+				Type: SOA (Start Of a zone of Authority)
+				Class: 0x0001 (Internet)
+				Time to live: 267 (0hours, 4minutes, 27seconds)
+				Data lenght: 70
+				Primary Name Server: ns-1260.awsdns-29.org
+				Responsible authority's mailbox: awsdns-hostmaster.amazon.com
+				Serial Number: 1
+				Refresh Interval: 7200 (2hours, 0minutes, 0seconds)
+				Retry Interval: 900 (0hours, 15minutes, 0seconds)
+				Expire Limit: 1209600 (336hours, 0minutes, 0seconds)
+				Minimum TTL: 86400 (24hours, 0minutes, 0seconds)
+
+Trame 3 :
+
+	ETHERNET :
+		Adresse Mac Destination: 00:09:0f:09:00:02
+		Adresse Mac Source: 98:54:1b:39:a6:11
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x0054 (84 octets)
+		Identifier: 0x8ea2
+		Flags: 0x4000
+			Reserve: 0
+			DF: 1
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x40 (64)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x12a1
+		Adresse IP Source: 0x0a4007f8 (10.64.7.248)
+		Adresse IP Destination: 0x869d0081 (134.157.0.129)
+	UDP : 
+		Source Port: 0x90c4 (37060)
+		Destination Port: 0x0035 (53)
+		Lenght: 0x0040 (64 octets)
+		Checksum: 0x649f (25759)
+	DNS : 
+		Transaction ID: 0x9e63 (40547)
+		Flags: 0x0100
+			0... .... .... ....	= Response: 0 (Query)
+			.000 0... .... ....	= OPCode: 0 (Standard query)
+			.... .0.. .... ....	= Authoritative Answer: 0 (Server is not an authority for domain)
+			.... ..0. .... ....	= Truncated: 0
+			.... ...1 .... ....	= Recursion Desired: 1 (Do query recursively)
+			.... .... 0... ....	= Recursion Available: 0 (Server can not do recursive queries)
+			.... .... .000 ....	= Z: 0 (Reserved)
+			.... .... .... 0000	= Reply Code: 0 (No Error)
+		Questions: 0x0001 (1)
+		Answers: 0x0000 (0)
+		Authority: 0x0000 (0)
+		Additional: 0x0001 (1)
+		Queries: 
+			privacyportal.cookiepro.com:  type A, class IN
+				Name: privacyportal.cookiepro.com
+				Name Lenght: 26
+				Label Count: 3
+				Class: IN
+		Additional informations: 
+			:  type None, class IN,  
+				Name: 
+				Type: None (None)
+				Class: 0x2902 (Internet)
+				Time to live: 0 (0hours, 0minutes, 0seconds)
+				Data lenght: 0
+				None: 
 

@@ -106,19 +106,25 @@ def analyse_IP(Liste):
 
 # à écrire
 def analyse_IP_option(Liste):
+	"""
+	list[str] -> str
+	Renvoyer un str représentant l'entête IP option
+	"""
 	res = "\tOPTION IP : \n"
 
 	return res
 
 # à écrire
 def analyse_UDP(Liste):
+	"""
+	list[str] -> str
+	Renvoyer un str représentant l'entête UPD
+	"""
 	res = "\tUDP : \n"
-	
 	position_debut = 0
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Source Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-		print("".join(Liste[position_debut:position_fin]))
 		if tools.dico_type_udp.get("".join(Liste[position_debut:position_fin])) is not None:
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
 		else: 
@@ -139,8 +145,11 @@ def analyse_UDP(Liste):
 		res += tools.constructeur_chaine_caracteres(2, "Checksum","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	return res, app
 
-# à écrire
 def analyse_DNS(Liste):
+	"""
+	list[str] -> str
+	Renvoyer un str représentant l'entête DNS
+	"""
 	res = "\tDNS : \n"
 	position_debut = 0
 	position_fin = 2
@@ -256,35 +265,94 @@ def analyse_DNS(Liste):
 
 # à écrire
 def analyse_DHCP(Liste):
-	return ""
-
-
-# # Renvoie un str représentant l'entête TCP
-# # à modifier
-# def analyseTCP(Liste):
-# 	a, i=analyse_IP(Liste)
-# 	res = "\tTCP : \n"
-# 	res += "		Source port number : "+tools.LStrToStr(Liste[0:2])+"("+tools.LStrToPort(Liste[0:2])+")"+"\n"
-# 	res += "		Destination port number : "+tools.LStrToStr(Liste[2:4])+"("+tools.LStrToPort(Liste[2:4])+")"+"\n"
-# 	res += "		Sequence Number : "+tools.LStrToStr(Liste[4:8])+"("+tools.LStrToPort(Liste[4:8])+")"+"\n"
-# 	res += "		Acknowledgment number : "+tools.LStrToStr(Liste[8:12])+" ("+tools.LStrToPort(Liste[8:12])+")"+"\n"
-# 	Lb = tools.LStrToBin(Liste[12:14])
-# 	res += "		Transport Header Length: "+Lb[0]+Lb[1]+Lb[2]+Lb[3]+"("+str(int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4)+")"+"\n"
-# 	res += "		Flags : 0x"+Liste[12][1]+Liste[13]+"\n"
-# 	res += "			Reserved : "
-# 	for j in range(4,10):
-# 		res+= Lb[j]
-# 	res += "\n"
-# 	res += "			URG : "+Lb[10]+"\n"
-# 	res += "			ACK : "+Lb[11]+"\n"
-# 	res += "			PSH : "+Lb[12]+"\n"
-# 	res += "			RST : "+Lb[13]+"\n"
-# 	res += "			SYN : "+Lb[14]+"\n"
-# 	res += "			FIN : "+Lb[15]+"\n"
-# 	res += "		Window : "+tools.LStrToStr(Liste[14:16])+"("+tools.LStrToPort(Liste[14:16])+")"+"\n"
-# 	res += "		Checksum : "+tools.LStrToStr(Liste[16:18])+"("+tools.LStrToPort(Liste[16:18])+")"+"\n"
-# 	res += "		Urgent Pointer : "+tools.LStrToStr(Liste[18:20])+"("+tools.LStrToPort(Liste[18:20])+")"+"\n"
-# 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
+	"""
+	list[str] -> str
+	Renvoyer un str représentant l'entête DHCP
+	"""
+	res = "\tDHCP : \n"
+	position_debut = 0
+	position_fin = 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = "non connue" if valeur not in tools.dico_opcod_dhcp else tools.dico_opcod_dhcp.get(valeur)
+		res += tools.constructeur_chaine_caracteres(2, "Operation Code", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		res += tools.constructeur_chaine_caracteres(2, "Hardware Type", "0x" + valeur)
+	position_debut = position_fin
+	position_fin = 3
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = tools.liste_hex_2_dec(valeur)
+		longueur_hardware = int(interpretation)
+		res += tools.constructeur_chaine_caracteres(2, "Hardware Address Length", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 4
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		res += tools.constructeur_chaine_caracteres(2, "Hops", "0x" + valeur)
+	position_debut = position_fin
+	position_fin = 8
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = tools.liste_hex_2_dec(valeur)
+		res += tools.constructeur_chaine_caracteres(2, "Transaction Identifier", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 10
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = tools.liste_hex_2_dec(valeur) + " seconds"
+		res += tools.constructeur_chaine_caracteres(2, "Seconds", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 12
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		valeur = format(int(valeur, base = 16), '016b')
+		res += tools.constructeur_chaine_caracteres(2, "Flags", "0x" + valeur)
+		boardcast_flag = valeur[0]
+		boardcast_interpretation = "boardcast" if boardcast_flag == "1" else "unicast"
+		res += tools.constructeur_chaine_caracteres(3, "Boardcast Flags", "0x" + boardcast_flag, boardcast_interpretation)
+		reserve_flag = valeur[1:]
+		res += tools.constructeur_chaine_caracteres(3, "Reserved Flags", "0x" + reserve_flag)
+	position_debut = position_fin
+	position_fin = 16
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		res += tools.constructeur_chaine_caracteres(2, "Client IP Adress", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 20
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		res += tools.constructeur_chaine_caracteres(2, "Your IP Adress", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 24
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		res += tools.constructeur_chaine_caracteres(2, "Server IP Adress", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 28
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		res += tools.constructeur_chaine_caracteres(2, "Gateway IP Adress", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 44
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
+		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
+		interpretation = ":".join(Liste[position_debut: position_debut + longueur_hardware])
+		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 110
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
+		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
+		interpretation = ":".join(Liste[position_debut: position_debut + longueur_hardware])
+		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
+	return res
 
 def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 	name =''
