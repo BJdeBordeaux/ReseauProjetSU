@@ -347,11 +347,23 @@ def analyse_DHCP(Liste):
 		interpretation = ":".join(Liste[position_debut: position_debut + longueur_hardware])
 		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
 	position_debut = position_fin
-	position_fin = 110
-	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
-		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
-		interpretation = ":".join(Liste[position_debut: position_debut + longueur_hardware])
-		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
+	position_fin = 108
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		if(valeur[0:2] == "00"):
+			interpretation = "Not given"
+		else:
+			interpretation = bytes.fromhex(valeur).decode("ASCII")
+		res += tools.constructeur_chaine_caracteres(2, "Server Host Name", interpretation)
+	position_debut = position_fin
+	position_fin = 236
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		if(valeur[0:2] == "00"):
+			interpretation = "Not given"
+		else:
+			interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		res += tools.constructeur_chaine_caracteres(2, "Boot File Name", interpretation)
 	return res
 
 def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
