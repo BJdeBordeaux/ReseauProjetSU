@@ -64,6 +64,27 @@ dico_opcod_dhcp = {
 	"02" : "Boot Reply",
 }
 
+dico_option_dhcp = {
+	"00" : "Pad",
+	"01" : "Subnet Mask",
+	"02" : "Time Offset",
+	"03" : "Router",
+	"06" : "DNS Name Server",
+	"0c" : "Host Name",
+	"21" : "Static Route",
+	"32" : "Request IP Address",
+	"33" : "IP Address Lease",
+	"35" : "DHCP Message Type",
+	"36" : "DHCP Server Identifier",
+	"37" : "Parameter Request List",
+	"38" : "Renewal Time Value",
+	"39" : "Maximum DHCP Message Size",
+	"3b" : "Rebinding Time Value",
+	"3d" : "Client Identifier",
+	"e0" : "Private",
+	"ff" : "End",
+}
+
 def sec_to_hours(seconds):
     a=str(seconds//3600)
     b=str((seconds%3600)//60)
@@ -75,6 +96,16 @@ def sec_to_hours(seconds):
 
 def liste_hex_2_dec(Liste):
 	return str(int("".join(Liste), base = 16))
+
+def liste_hex_2_IP(Liste):
+	return ".".join([str(int(hex, base = 16)) for hex in Liste])
+
+def liste_hex_2_MAC(Liste):
+	return ":".join(Liste)
+
+def liste_hex_2_ASCII(Liste):
+	fin = Liste.index("00")
+	return bytes.fromhex(Liste[0:fin]).decode("ASCII")
 
 def info_erreur(erreur_str, longueur_trame):
 	"""

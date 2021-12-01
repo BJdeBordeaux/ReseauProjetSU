@@ -279,7 +279,7 @@ def analyse_DHCP(Liste):
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
-		res += tools.constructeur_chaine_caracteres(2, "Hardware Type", "0x" + valeur)
+		res += tools.constructeur_chaine_caracteres(2, "Hardware Type", "0x" + valeur, "Ethernet" if valeur == "01" else "")
 	position_debut = position_fin
 	position_fin = 3
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -337,13 +337,13 @@ def analyse_DHCP(Liste):
 	position_fin = 28
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
-		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+		interpretation = tools.liste_hex_2_IP(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Gateway IP Adress", "0x" + valeur, interpretation)
 	position_debut = position_fin
 	position_fin = 44
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
 		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
-		interpretation = ":".join(Liste[position_debut: position_debut + longueur_hardware])
+		interpretation = tools.liste_hex_2_MAC(Liste[position_debut: position_debut + longueur_hardware])
 		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
 	position_debut = position_fin
 	position_fin = 108
@@ -352,7 +352,7 @@ def analyse_DHCP(Liste):
 		if(valeur[0:2] == "00"):
 			interpretation = "Not given"
 		else:
-			interpretation = bytes.fromhex(valeur).decode("ASCII")
+			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Server Host Name", interpretation)
 	position_debut = position_fin
 	position_fin = 236
@@ -361,55 +361,68 @@ def analyse_DHCP(Liste):
 		if(valeur[0:2] == "00"):
 			interpretation = "Not given"
 		else:
-			interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
+			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Boot File Name", interpretation)
+	position_debut = position_fin
+	position_fin = 240
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		valeur = "".join(Liste[position_debut:position_fin])
+		res += tools.constructeur_chaine_caracteres(2, "Magic cookie", interpretation)
+	position_debut = position_fin
+	position_fin = 241
+	
+	# analyse d'option
+	#while(Liste[position_debut] != "ff" or ):
+	#	position_debut += 1
+	#	continue
+
 	return res
 
 def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 	name =''
 	label = 0
-# On passe au premier octet de la réponse
+	# On passe au premier octet de la réponse
 	position_debut = position_fin
 	position_fin = position_debut + 1
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
 		if Liste[position_debut:position_fin][0] == "c0":
-# On passe à l'octet qui nous indique ou lire le label
+			# On passe à l'octet qui nous indique ou lire le label
 			position_debut = position_fin
 			position_fin = position_debut + 1
-# On se place à l'endroit indiqué par l'octet au dessus
+			# On se place à l'endroit indiqué par l'octet au dessus
 			debut_aux = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 			fin_aux = debut_aux + 1
 			while int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0 and Liste[debut_aux:fin_aux][0] !="c0":
 				taille = int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux]))		
 				for i in range(taille):			
-# On lit chacun des octets jusqu'a la fin du label
+					# On lit chacun des octets jusqu'a la fin du label
 					debut_aux = fin_aux
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
-# On passe au prochain label
+				# On passe au prochain label
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
-# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+				# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 				if int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0:
 					name +="."
 				label += 1
-# On passe au prochain champ de la réponse
+			# On passe au prochain champ de la réponse
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			break
-# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
+		# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
-# On lit chacun des octets jusqu'a la fin du label
+			# On lit chacun des octets jusqu'a la fin du label
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
-# On passe au prochain label
+		# On passe au prochain label
 		position_debut = position_fin
 		position_fin = position_debut + 1
-# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+		# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		label += 1
@@ -577,48 +590,48 @@ def adresse6(Liste, position_debut,position_fin):
 def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	name =''
 	label = 0
-# On passe au premier octet de la réponse
+	# On passe au premier octet de la réponse
 	position_debut = position_fin
 	position_fin = position_debut + 1
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
 		if Liste[position_debut:position_fin][0] == "c0":
-# On passe à l'octet qui nous indique ou lire le label
+			# On passe à l'octet qui nous indique ou lire le label
 			position_debut = position_fin
 			position_fin = position_debut + 1
-# On se place à l'endroit indiqué par l'octet au dessus
+			# On se place à l'endroit indiqué par l'octet au dessus
 			debut_aux = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 			fin_aux = debut_aux + 1
 			while int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0 and Liste[debut_aux:fin_aux][0] !="c0":
 				taille = int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux]))		
 				for i in range(taille):			
-# On lit chacun des octets jusqu'a la fin du label
+					# On lit chacun des octets jusqu'a la fin du label
 					debut_aux = fin_aux
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
-# On passe au prochain label
+				# On passe au prochain label
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
-# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+				# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 				if int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0:
 					name +="."
 				label += 1
-# On passe au prochain champ de la réponse
+			# On passe au prochain champ de la réponse
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			break
-# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
+		# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
-# On lit chacun des octets jusqu'a la fin du label
+			# On lit chacun des octets jusqu'a la fin du label
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
-# On passe au prochain label
+		# On passe au prochain label
 		position_debut = position_fin
 		position_fin = position_debut + 1
-# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+		# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		label += 1
@@ -679,3 +692,25 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Minimum TTL",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
 	return res, position_debut, position_fin
+
+def DHCP_option(Liste):
+	"""
+	list[str] -> str, int, list[str, str, str]
+	Renvoyer un les résultats d'analyse d'otpion DHCP
+	"""
+	# initialisation
+	tag_option = Liste[0]
+	longueur_data = 0
+	longueur_totale = 1
+	liste_champs_valeur_interpretation = list()
+
+	liste_sans_data = ["00", "ff"]
+	liste_interpretation_dico = []
+	liste_interpretation_IP = []
+	liste_interpretation_MAC = []
+	liste_interpretation_temps = []
+
+
+	if(tag_option in liste_sans_data):
+		liste_champs_valeur_interpretation.append([])
+	return tag_option, longueur_data, liste_champs_valeur_interpretation, longueur_totale

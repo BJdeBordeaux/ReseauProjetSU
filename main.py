@@ -47,7 +47,6 @@ longueur_TCP = 20
 # construire les chaînes de caractères correspondant aux trames
 for index_trame in range(len(liste)):
 	res += "\nTrame "+str(index_trame+1)+" :\n"
-
 	#afficher information d'erreur
 	information_erreur = ""
 	if(not tools.octet_valide(liste[index_trame][-1])):
@@ -88,6 +87,12 @@ for index_trame in range(len(liste)):
 					res += analyse.analyse_DNS(liste[index_trame][position_courante:])
 				elif prochain_app == "DHCP":
 					res += analyse.analyse_DHCP(liste[index_trame][position_courante:])
+				else:
+					res += "Protocol non supporté. Passe à la trame prochaine.\n"
+					continue
+			else:
+				res += "Protocol non supporté. Passe à la trame prochaine.\n"
+				continue
 	# ajout d'information d'erreur à la fin
 	res += information_erreur
 

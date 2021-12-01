@@ -88,6 +88,8 @@ for index_trame in range(len(liste)):
 					res += analyse.analyse_DNS(liste[index_trame][position_courante:])
 				elif prochain_app == "DHCP":
 					res += analyse.analyse_DHCP(liste[index_trame][position_courante:])
+			else:
+				res += "Protocol non supporté. Passe à la trame prochaine.\n"
 	# ajout d'information d'erreur à la fin
 	res += information_erreur
 

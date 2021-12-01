@@ -22,6 +22,9 @@ dhcp1:
 dhcp2:
 	python3 main.py tramedhcp2.txt res.txt && cat res.txt
 
+dhcp3:
+	python3 main.py dhcp3.txt res.txt && cat res.txt
+
 trame:
 	python3 main.py trame.txt res.txt && cat res.txt
 
