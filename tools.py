@@ -163,6 +163,7 @@ def liste_brute_2_liste(Liste):
 				octet_invalide = False
 
 			# s'il y a une erreur, on ignore la trame
+
 			if ignorer_ligne == False:
 				if indice_ligne < len(Liste)-1 and offset_en_hex != 0:
 					# en cas d'erreur
@@ -185,9 +186,14 @@ def liste_brute_2_liste(Liste):
 				# on supprime des éléments qui ne sont pas attendu par l'offset
 				while(len(trame_courante) > offset_en_hex):
 					trame_courante.pop()
+					#if(len(liste_brute) < 3):
+					#	print(())
+				point_darret=len(trame_courante)
 				if point_darret == offset_en_hex:
 					ignorer_element = False
-					
+				#if(len(liste_brute) < 3):
+				#	print(Liste[indice_ligne], ignorer_element, ignorer_ligne, point_darret, offset_en_hex)
+				
 				# on prend des octets dans la ligne
 				for indice_element in range(1, len(Liste[indice_ligne])):
 					element_courant = Liste[indice_ligne][indice_element]

@@ -2,45 +2,28 @@
 Trame 1 :
 
 	ETHERNET :
-		Adresse Mac Destination: 00:01:00:06:00:09
-		Adresse Mac Source: 0f:09:00:02:00:00
+		Adresse Mac Destination: 3c:a0:67:db:0a:2b
+		Adresse Mac Source: 20:47:47:84:31:d8
 		Protocol: 0x0800 (IPv4)
 	IP : 
 		Version: 0x4 (IPv4)
 		Header length: 0x5 (20)
-		Type of service: 0x10
-		Total Length: 0x0167 (359 octets)
+		Type of service: 0x00
+		Total Length: 0x0035 (53 octets)
 		Identifier: 0x0000
-		Flags: 0x0000
+		Flags: 0x4000
 			Reserve: 0
-			DF: 0
+			DF: 1
 			MF: 0
 			Fragment offset: 0x0 (0 octets)
-		Time To Live: 0x10 (16)
+		Time To Live: 0x3c (60)
 		Protocol: 0x11 (UDP)
-		Header checksum: 0x491b
-		Adresse IP Source: 0x0a403ffe (10.64.63.254)
-		Adresse IP Destination: 0x0a400bde (10.64.11.222)
+		Header checksum: 0xdc83
+		Adresse IP Source: 0x426601bd (66.102.1.189)
+		Adresse IP Destination: 0x0abc1356 (10.188.19.86)
 	UDP : 
-		Source Port: 0x0043 (67)
-		Destination Port: 0x0044 (68)
-		Lenght: 0x0153 (339 octets)
-		Checksum: 0x61ee (25070)
-	DHCP : 
-		Operation Code: 0x02 (Boot Reply)
-		Hardware Type: 0x01
-		Hardware Address Length: 0x06 (6)
-		Hops: 0x00
-		Transaction Identifier: 0x54a01999 (1419778457)
-		Seconds: 0x0001 (1 seconds)
-		Flags: 0x0000000000000000
-			Boardcast Flags: 0x0 (unicast)
-			Reserved Flags: 0x000000000000000
-		Client IP Adress: 0x00000000 (0.0.0.0)
-		Your IP Adress: 0x0a400bde (10.64.11.222)
-		Server IP Adress: 0x00000000 (0.0.0.0)
-		Gateway IP Adress: 0x00000000 (0.0.0.0)
-		Client Hardware Adress: 0x0cdd24826577 (0c:dd:24:82:65:77)
-		Server Host Name: Not given
-		Boot File Name: Not given
+		Source Port: 0x01bb (443)
+		Destination Port: 0xfe31 (65073)
+		Lenght: 0x0021 (33 octets)
+		Checksum: 0xd071 (53361)
 

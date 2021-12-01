@@ -38,6 +38,7 @@ def analyse_IP(Liste):
 	Renvoyer un str représentant l'entête IP
 	"""
 	res = "\tIP : \n"
+	proto = ""
 
 	position_debut = 0
 	position_fin = 1
@@ -80,11 +81,8 @@ def analyse_IP(Liste):
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		protocol_hex = "".join(Liste[position_debut:position_fin])
-		if tools.dico_type_ip_protocol.get(protocol_hex) is not None:
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, tools.dico_type_ip_protocol.get(protocol_hex))
-		else: 
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, "inconnu")
-		proto = tools.dico_type_ip_protocol.get(protocol_hex)
+		proto = "inconnu" if protocol_hex not in tools.dico_type_ip_protocol else tools.dico_type_ip_protocol.get(protocol_hex)
+		res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, proto)
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -102,6 +100,7 @@ def analyse_IP(Liste):
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Destination", "0x" + "".join(Liste[position_debut:position_fin]), ".".join(ip))	
+	
 	return res, proto
 
 # à écrire
