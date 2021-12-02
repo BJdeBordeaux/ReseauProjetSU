@@ -72,6 +72,7 @@ dico_option_dhcp = {
 	"06" : "DNS Name Server",
 	"0c" : "Host Name",
 	"21" : "Static Route",
+	"2a" : "NTP Servers",
 	"32" : "Request IP Address",
 	"33" : "IP Address Lease",
 	"35" : "DHCP Message Type",
@@ -91,7 +92,7 @@ dico_option_dhcp = {
 dhcp_option_liste_sans_data = ["00", "ff"]
 dhcp_option_liste_interpretation_dico = ["35", "74", ]
 dhcp_option_liste_interpretation_IP = ["01", "03", "06", "32", "36", ]
-dhcp_option_liste_interpretation_temps = ["33", "3a",]
+dhcp_option_liste_interpretation_temps = ["33", "3a", "3b"]
 dhcp_option_liste_interpretation_chaine = ["0c", "0f", "3c"]
 dhcp_option_liste_interpretation_multichamps = ["37", "3d", ]
 
@@ -110,7 +111,7 @@ def sec_to_hours(seconds):
     a=str(seconds//3600)
     b=str((seconds%3600)//60)
     c=str((seconds%3600)%60)
-    d=a+ "hours, "+b+"minutes, "+c+"seconds"
+    d=a+ " hours, "+b+" minutes, "+c+" seconds"
     return d
 
 

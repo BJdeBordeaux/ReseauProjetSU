@@ -368,14 +368,11 @@ def analyse_DHCP(Liste):
 	position_fin = 240
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
-		res += tools.constructeur_chaine_caracteres(2, "Magic cookie", interpretation)
+		res += tools.constructeur_chaine_caracteres(2, "Magic cookie", "Magic cookie")
 	position_debut = position_fin
 	position_fin = 241
 	
-	# analyse d'option
-	#while(Liste[position_debut] != "ff" or ):
-	#	position_debut += 1
-	#	continue
+	res += analyse_DHCP_option(Liste[position_debut:])
 
 	return res
 
@@ -694,7 +691,7 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 		res += tools.constructeur_chaine_caracteres(4, "Minimum TTL",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
 	return res, position_debut, position_fin
 
-def DHCP_option(Liste):
+def analyse_DHCP_option(Liste):
 	"""
 	list[str] -> str, int, list[str, str, str]
 	Renvoyer un les résultats d'analyse d'otpion DHCP
@@ -723,24 +720,45 @@ def DHCP_option(Liste):
 			break
 		# DHCP option : type, longueur, valeur
 		longueur_data = Liste[position_debut+1]
+		longueur_data_en_int = int(Liste[position_debut+1], 16)
 		position_fin = position_debut + int(longueur_data, 16) + 2
-		indentation = 3
 		champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
-		valeur = "".join(Liste[position_debut:position_fin])
-		interpretation_sous_champs = ""
+		res += tools.constructeur_chaine_caracteres(2, champs, Liste[position_debut], interpretation)
+		res += tools.constructeur_chaine_caracteres(3, "Length", longueur_data, str(longueur_data_en_int))
+		indentation = 3
+		interpretation_sous_champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
+		valeur_en_liste = Liste[position_debut+2:position_fin]
+		valeur_chainee = "".join(valeur_en_liste)
 		if tag_option in tools.dhcp_option_liste_interpretation_dico:
 			if tag_option == "35": # DHCP Message Type
-				interpretation = "inconnu" if tag_option not in tools.dico_type_dhcp else tools.dico_type_dhcp.get(tag_option)
-			elif tag_option == "74":
-				interpretation = "Set" if tag_option == "01" else "Not Set"
-			else:
-			res += tools.constructeur_chaine_caracteres(3, champs, tag_option, interpretation)
-		# elif tag_option in liste_interpretation_IP:
-		# elif tag_option in liste_interpretation_MAC:
-		# elif tag_option in liste_interpretation_temps:
-		# else :
+				interpretation_sous_champs = "inconnu" if valeur_chainee not in tools.dico_type_dhcp else tools.dico_type_dhcp.get(valeur_chainee)
+			elif tag_option == "74": # DHCP Auto-configuration
+				interpretation_sous_champs = "Set" if valeur_chainee == "01" else "Not Set"
+			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
+		elif tag_option in tools.dhcp_option_liste_interpretation_IP:
+			for cpt in range(longueur_data_en_int//4):
+				interpretation_sous_champs = tools.liste_hex_2_IP(valeur_en_liste[cpt:cpt+4])
+				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee[cpt*8:cpt*8+8], interpretation_sous_champs)
+		elif tag_option in tools.dhcp_option_liste_interpretation_temps:
+			interpretation_sous_champs = tools.sec_to_hours(int(valeur_chainee, 16))
+			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
+		elif tag_option in tools.dhcp_option_liste_interpretation_chaine:
+			interpretation_sous_champs = bytes.fromhex(valeur_chainee).decode("ASCII")
+			res += tools.constructeur_chaine_caracteres(indentation, champs, interpretation_sous_champs)
+		elif tag_option in tools.dhcp_option_liste_interpretation_multichamps:
+			if tag_option == "37": # Parameter Request List
+				# champs, valeur_chainee, interpretation = 
+				for cpt in range(len(valeur_en_liste)):
+					res += tools.constructeur_chaine_caracteres(indentation, champs + " Item", valeur_en_liste[cpt], "" if valeur_en_liste[cpt] not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(valeur_en_liste[cpt]))
+			elif tag_option == "3d": # Client Identifier
+				res += tools.constructeur_chaine_caracteres(indentation, "Hardware Type", valeur_en_liste[0], "Ethernet" if valeur_chainee[0] == "01" else "")
+				res += tools.constructeur_chaine_caracteres(indentation, "Client MAC Address", tools.liste_hex_2_MAC(valeur_en_liste[1:]))
+		else :
 			# on ne connait pas le protocol, et on imprime les octets directement
-			# option qui n'a qu'un seul octet
+			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee)
+		position_debut = position_fin
+		position_fin += 1
+	tag_option = Liste[position_debut]
 	if tag_option == "ff":
 		res += tools.constructeur_chaine_caracteres(2, "Option", tag_option, tools.dico_option_dhcp.get(tag_option))
 		position_debut = position_fin
@@ -749,10 +767,3 @@ def DHCP_option(Liste):
 		nb_00 = len(Liste[position_debut:])
 		res += tools.constructeur_chaine_caracteres(2, "Padding", nb_00*"00")
 	return res
-	#return tag_option, interpretation, longueur_data, liste_champs_valeur_interpretation, longueur_totale
-	# option : valeur (tyep d'option)
-	# option : valeur (type d'option)
-		# champs1 : xxx (x1)
-		# champs2 : yyy (y1)
-	# option : valeur (type d'option)
-		# octets : xxx
