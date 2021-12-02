@@ -85,6 +85,14 @@ dico_option_dhcp = {
 	"ff" : "End",
 }
 
+
+
+dhcp_option_liste_sans_data = ["00", "ff"]
+dhcp_option_liste_interpretation_dico = []
+dhcp_option_liste_interpretation_IP = []
+dhcp_option_liste_interpretation_MAC = []
+dhcp_option_liste_interpretation_temps = []
+
 def sec_to_hours(seconds):
     a=str(seconds//3600)
     b=str((seconds%3600)//60)

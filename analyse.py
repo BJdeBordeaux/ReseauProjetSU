@@ -1,3 +1,4 @@
+from os import posix_fadvise
 import tools
 
 def analyse_ethernet(Liste):
@@ -698,19 +699,51 @@ def DHCP_option(Liste):
 	list[str] -> str, int, list[str, str, str]
 	Renvoyer un les résultats d'analyse d'otpion DHCP
 	"""
-	# initialisation
-	tag_option = Liste[0]
+	position_debut = 0
+	position_fin = 1
+	res = ""
+	# initialisation des variables
+	tag_option = Liste[position_debut]
 	longueur_data = 0
 	longueur_totale = 1
 	liste_champs_valeur_interpretation = list()
+	interpretation = "option non connue" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
 
-	liste_sans_data = ["00", "ff"]
-	liste_interpretation_dico = []
-	liste_interpretation_IP = []
-	liste_interpretation_MAC = []
-	liste_interpretation_temps = []
+	while tools.verificateur_avant_constructeur(Liste, position_debut, position_fin) and Liste[position_debut] not in ["00", "ff"]:
+		
+		# reinitialisation des variables
+		tag_option = Liste[position_debut]
+		longueur_data = 0
+		longueur_totale = 1
+		liste_champs_valeur_interpretation = list()
+		interpretation = "option non connue" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
+		
 
-
-	if(tag_option in liste_sans_data):
-		liste_champs_valeur_interpretation.append([])
-	return tag_option, longueur_data, liste_champs_valeur_interpretation, longueur_totale
+		if(len(Liste[position_debut:]) == 2): # option format non valide
+			res += "Format option non valide.\n"
+			break
+		longueur_data = Liste[position_debut+1]
+		position_fin = position_debut + int(longueur_data, 16) + 2
+		if tag_option in tools.dhcp_option_liste_interpretation_dico:
+			res += tools.constructeur_chaine_caracteres(3, "")
+		# elif tag_option in liste_interpretation_IP:
+		# elif tag_option in liste_interpretation_MAC:
+		# elif tag_option in liste_interpretation_temps:
+		# else :
+			# on ne connait pas le protocol, et on imprime les octets directement
+			# option qui n'a qu'un seul octet
+	if tag_option == "ff":
+		res += tools.constructeur_chaine_caracteres(2, "Option", tag_option, tools.dico_option_dhcp.get(tag_option))
+		position_debut = position_fin
+		position_fin += 1
+	elif tag_option == "00":
+		nb_00 = len(Liste[position_debut:])
+		res += tools.constructeur_chaine_caracteres(2, "Padding", nb_00*"00")
+	return res
+	#return tag_option, interpretation, longueur_data, liste_champs_valeur_interpretation, longueur_totale
+	# option : valeur (tyep d'option)
+	# option : valeur (type d'option)
+		# champs1 : xxx (x1)
+		# champs2 : yyy (y1)
+	# option : valeur (type d'option)
+		# octets : xxx
