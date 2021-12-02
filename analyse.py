@@ -715,17 +715,26 @@ def DHCP_option(Liste):
 		tag_option = Liste[position_debut]
 		longueur_data = 0
 		longueur_totale = 1
-		liste_champs_valeur_interpretation = list()
 		interpretation = "option non connue" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
 		
 
-		if(len(Liste[position_debut:]) == 2): # option format non valide
-			res += "Format option non valide.\n"
+		if(len(Liste[position_debut:]) <= 2): # option format non valide
+			res += "Format DHCP option non valide.\n"
 			break
+		# DHCP option : type, longueur, valeur
 		longueur_data = Liste[position_debut+1]
 		position_fin = position_debut + int(longueur_data, 16) + 2
+		indentation = 3
+		champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
+		valeur = "".join(Liste[position_debut:position_fin])
+		interpretation_sous_champs = ""
 		if tag_option in tools.dhcp_option_liste_interpretation_dico:
-			res += tools.constructeur_chaine_caracteres(3, "")
+			if tag_option == "35": # DHCP Message Type
+				interpretation = "inconnu" if tag_option not in tools.dico_type_dhcp else tools.dico_type_dhcp.get(tag_option)
+			elif tag_option == "74":
+				interpretation = "Set" if tag_option == "01" else "Not Set"
+			else:
+			res += tools.constructeur_chaine_caracteres(3, champs, tag_option, interpretation)
 		# elif tag_option in liste_interpretation_IP:
 		# elif tag_option in liste_interpretation_MAC:
 		# elif tag_option in liste_interpretation_temps:

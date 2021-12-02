@@ -79,19 +79,32 @@ dico_option_dhcp = {
 	"37" : "Parameter Request List",
 	"38" : "Renewal Time Value",
 	"39" : "Maximum DHCP Message Size",
+	"3a" : "Release Time Value",
 	"3b" : "Rebinding Time Value",
+	"3c" : "Vendor Class Identifier",
 	"3d" : "Client Identifier",
+	"74" : "DHCP Auto-configuration",
 	"e0" : "Private",
 	"ff" : "End",
 }
 
-
-
 dhcp_option_liste_sans_data = ["00", "ff"]
-dhcp_option_liste_interpretation_dico = []
-dhcp_option_liste_interpretation_IP = []
-dhcp_option_liste_interpretation_MAC = []
-dhcp_option_liste_interpretation_temps = []
+dhcp_option_liste_interpretation_dico = ["35", "74", ]
+dhcp_option_liste_interpretation_IP = ["01", "03", "06", "32", "36", ]
+dhcp_option_liste_interpretation_temps = ["33", "3a",]
+dhcp_option_liste_interpretation_chaine = ["0c", "0f", "3c"]
+dhcp_option_liste_interpretation_multichamps = ["37", "3d", ]
+
+dico_type_dhcp = {
+	"01" : "Discover",
+	"02" : "Offer",
+	"03" : "Request",
+	"04" : "Declin",
+	"05" : "ACK",
+	"06" : "NAK",
+	"07" : "Release",
+	"08" : "Inform",
+}
 
 def sec_to_hours(seconds):
     a=str(seconds//3600)
