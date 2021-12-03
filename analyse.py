@@ -794,7 +794,7 @@ def analyse_DHCP_option(Liste):
 		
 		# en cas de format non valide
 		if(len(Liste[position_debut:]) <= 2): 
-			res += "Format DHCP option non valide.Interruption d'analyse.\n"
+			res += "Format DHCP option non valide a partir de l'octet "+ str(position_debut) +".Interruption d'analyse.\n"
 			break
 		
 		# DHCP option : type, longueur, valeur

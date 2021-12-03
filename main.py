@@ -105,6 +105,7 @@ for index_trame in range(len(liste)):
 		res += information_erreur
 	
 	except:
+		res += "Une erreur est servenu a partir de l'octet " + str(position_courante) + "\n"
 		continue
 
 # Ecrire le trame dans le fichier destination

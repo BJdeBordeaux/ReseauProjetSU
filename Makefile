@@ -1,6 +1,9 @@
 all:
 	python3 main.py all.txt res.txt && cat res.txt
 
+test:
+	python3 main.py test.txt res.txt && cat res.txt
+
 ipo:
 	python3 main.py ip_option.txt res.txt && cat res.txt
 

@@ -5,9 +5,15 @@ tapez la commande "make" ou "make all".
 
 Pour changer de fichier source de la trame ou destination de la trame,
     veuillez ouvrir le fichier "Makefile" et remplacer http.txt par un autre fichier source ou res.txt par un autre fichier destination (dans ce cas dans les 2 commandes).
-	
+
     format : python3 main.py <nom du fichier source> <nom du fichier destination>")
-	Exemple: python3 main.py trame.txt res.txt
-	
+    Exemple: python3 main.py trame.txt res.txt
+
+    Or, des commandes peuvent servir pour la démonstration:
+    make all
+    make test
+    make ipo (pour une trame avec ip option)
+    make dns
+    make dhcp
 
 Pour supprimer le fichier destination créé veuillez tapez la commande "make clean"
