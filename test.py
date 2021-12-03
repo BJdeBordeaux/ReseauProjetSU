@@ -4,7 +4,7 @@ if len(sys.argv) != 3: # Si il y a bien 2 arguments, correspondant aux fichiers 
 	print("Erreur : Usage : <nom du fichier source> <nom du fichier destination>")
 	exit()
 
-# Vérifie l'existence du fichier source
+# Verifie l'existence du fichier source
 try:
 	f = open(sys.argv[1], "r")
 except:
@@ -14,11 +14,11 @@ except:
 d = open(sys.argv[2], "w")
 L = list()
 
-# Construit une liste à partir d'un fichier text, ligne par ligne
+# Construit une liste a partir d'un fichier text, ligne par ligne
 for line in f:
 	L.extend(line.split("\t"))
 
-# Construit la structure générale du programme, une liste composée de listes, dont chaque représente une trame (sans commentaire)
+# Construit la structure generale du programme, une liste composee de listes, dont chaque represente une trame (sans commentaire)
 LL = list()
 for e in L:
 	indice_premier_espace = 0
@@ -64,7 +64,7 @@ for i in range(len(LL)):
 
 d.write(res+"\n")
 
-# Ecrit le résultat dans le fichier destination
+# Ecrit le resultat dans le fichier destination
 res = ""
 for l in LL :
     res += ",".join(l)

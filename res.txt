@@ -2,57 +2,409 @@
 Trame 1 :
 
 	ETHERNET :
-		Adresse Mac Destination: 00:24:d4:a7:3f:a3
-		Adresse Mac Source: 98:54:1b:39:a6:11
+		Adresse Mac Destination: ff:ff:ff:ff:ff:ff
+		Adresse Mac Source: b8:66:85:9a:b1:0c
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x10
+		Total Length: 0x012a (298 octets)
+		Identifier: 0x0000
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x40 (64)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x79b4
+		Adresse IP Source: 0x00000000 (0.0.0.0)
+		Adresse IP Destination: 0xffffffff (255.255.255.255)
+	UDP : 
+		Source Port: 0x0044 (68)
+		Destination Port: 0x0043 (67)
+		Lenght: 0x0116 (278 octets)
+		Checksum: 0xcfb4 (53172)
+	DHCP : 
+		Operation Code: 0x01 (Boot Request)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x000ca4a3 (828579)
+		Seconds: 0xa377 (41847 seconds)
+		Flags: 0x1000000000000000
+			Boardcast Flags: 0x1 (boardcast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0x00000000 (0.0.0.0)
+		Server IP Adress: 0x00000000 (0.0.0.0)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0xb866859ab10c (b8:66:85:9a:b1:0c)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 01 (Discover)
+		Host Name: 0c (Host Name)
+			Length: 04 (4)
+			Host Name: bbox
+		Parameter Request List: 37 (Parameter Request List)
+			Length: 12 (18)
+			Parameter Request List Item: 01 (Subnet Mask)
+			Parameter Request List Item: 1c
+			Parameter Request List Item: 02 (Time Offset)
+			Parameter Request List Item: 03 (Router)
+			Parameter Request List Item: 0f
+			Parameter Request List Item: 06 (DNS Name Server)
+			Parameter Request List Item: 77
+			Parameter Request List Item: 0c (Host Name)
+			Parameter Request List Item: 2c
+			Parameter Request List Item: 2f
+			Parameter Request List Item: 1a
+			Parameter Request List Item: 79
+			Parameter Request List Item: 2a (NTP Servers)
+			Parameter Request List Item: 48
+			Parameter Request List Item: 21 (Static Route)
+			Parameter Request List Item: 33 (IP Address Lease)
+			Parameter Request List Item: 3a (Release Time Value)
+			Parameter Request List Item: 3b (Rebinding Time Value)
+		End: ff (End)
+
+Trame 2 :
+
+	ETHERNET :
+		Adresse Mac Destination: ff:ff:ff:ff:ff:ff
+		Adresse Mac Source: b8:66:85:9a:b1:0c
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x10
+		Total Length: 0x012a (298 octets)
+		Identifier: 0x0000
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x40 (64)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x79b4
+		Adresse IP Source: 0x00000000 (0.0.0.0)
+		Adresse IP Destination: 0xffffffff (255.255.255.255)
+	UDP : 
+		Source Port: 0x0044 (68)
+		Destination Port: 0x0043 (67)
+		Lenght: 0x0116 (278 octets)
+		Checksum: 0xcfb4 (53172)
+	DHCP : 
+		Operation Code: 0x01 (Boot Request)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x000ca4a3 (828579)
+		Seconds: 0xa377 (41847 seconds)
+		Flags: 0x1000000000000000
+			Boardcast Flags: 0x1 (boardcast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0x00000000 (0.0.0.0)
+		Server IP Adress: 0x00000000 (0.0.0.0)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0xb866859ab10c (b8:66:85:9a:b1:0c)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 01 (Discover)
+		Host Name: 0c (Host Name)
+			Length: 04 (4)
+			Host Name: bbox
+		Parameter Request List: 37 (Parameter Request List)
+			Length: 12 (18)
+			Parameter Request List Item: 01 (Subnet Mask)
+			Parameter Request List Item: 1c
+			Parameter Request List Item: 02 (Time Offset)
+			Parameter Request List Item: 03 (Router)
+			Parameter Request List Item: 0f
+			Parameter Request List Item: 06 (DNS Name Server)
+			Parameter Request List Item: 77
+			Parameter Request List Item: 0c (Host Name)
+			Parameter Request List Item: 2c
+			Parameter Request List Item: 2f
+			Parameter Request List Item: 1a
+			Parameter Request List Item: 79
+			Parameter Request List Item: 2a (NTP Servers)
+			Parameter Request List Item: 48
+			Parameter Request List Item: 21 (Static Route)
+			Parameter Request List Item: 33 (IP Address Lease)
+			Parameter Request List Item: 3a (Release Time Value)
+			Parameter Request List Item: 3b (Rebinding Time Value)
+		End: ff (End)
+
+Trame 3 :
+
+	ETHERNET :
+		Adresse Mac Destination: ff:ff:ff:ff:ff:ff
+		Adresse Mac Source: 00:0b:82:01:fc:42
 		Protocol: 0x0800 (IPv4)
 	IP : 
 		Version: 0x4 (IPv4)
 		Header length: 0x5 (20)
 		Type of service: 0x00
-		Total Length: 0x004a (74 octets)
-		Identifier: 0x288f
-		Flags: 0x4000
+		Total Length: 0x012c (300 octets)
+		Identifier: 0xa836
+		Flags: 0x0000
 			Reserve: 0
-			DF: 1
+			DF: 0
 			MF: 0
 			Fragment offset: 0x0 (0 octets)
-		Time To Live: 0x40 (64)
+		Time To Live: 0xfa (250)
 		Protocol: 0x11 (UDP)
-		Header checksum: 0x8da2
-		Adresse IP Source: 0xc0a80123 (192.168.1.35)
-		Adresse IP Destination: 0xc0a801fe (192.168.1.254)
+		Header checksum: 0x178b
+		Adresse IP Source: 0x00000000 (0.0.0.0)
+		Adresse IP Destination: 0xffffffff (255.255.255.255)
 	UDP : 
-		Source Port: 0x9ef3 (40691)
-		Destination Port: 0x0035 (53)
-		Lenght: 0x0036 (54 octets)
-		Checksum: 0x5d0f (23823)
-	DNS : 
-		Transaction ID: 0x710c (28940)
-		Flags: 0x0100
-			0... .... .... ....	= Response: 0 (Query)
-			.000 0... .... ....	= OPCode: 0 (Standard query)
-			.... .0.. .... ....	= Authoritative Answer: 0 (Server is not an authority for domain)
-			.... ..0. .... ....	= Truncated: 0
-			.... ...1 .... ....	= Recursion Desired: 1 (Do query recursively)
-			.... .... 0... ....	= Recursion Available: 0 (Server can not do recursive queries)
-			.... .... .000 ....	= Z: 0 (Reserved)
-			.... .... .... 0000	= Reply Code: 0 (No Error)
-		Questions: 0x0001 (1)
-		Answers: 0x0000 (0)
-		Authority: 0x0000 (0)
-		Additional: 0x0001 (1)
-		Queries: 
-			cs9.wpc.v0cdn.net:  type AAAA, class IN
-				Name: cs9.wpc.v0cdn.net
-				Name Lenght: 16
-				Label Count: 4
-				Class: IN
-		Additional informations: 
-			:  type None, class IN,  
-				Name: 
-				Type: None (None)
-				Class: 0x2902 (Internet)
-				Time to live: 0 (0 hours, 0 minutes, 0 seconds)
-				Data lenght: 0
-				None: 
+		Source Port: 0x0044 (68)
+		Destination Port: 0x0043 (67)
+		Lenght: 0x0118 (280 octets)
+		Checksum: 0x591f (22815)
+	DHCP : 
+		Operation Code: 0x01 (Boot Request)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x00003d1d (15645)
+		Seconds: 0x0000 (0 seconds)
+		Flags: 0x0000000000000000
+			Boardcast Flags: 0x0 (unicast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0x00000000 (0.0.0.0)
+		Server IP Adress: 0x00000000 (0.0.0.0)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0x000b8201fc42 (00:0b:82:01:fc:42)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 01 (Discover)
+		Client Identifier: 3d (Client Identifier)
+			Length: 07 (7)
+			Hardware Type: 01
+			Client MAC Address: 00:0b:82:01:fc:42
+		Request IP Address: 32 (Request IP Address)
+			Length: 04 (4)
+			Request IP Address: 00000000 (0.0.0.0)
+		Parameter Request List: 37 (Parameter Request List)
+			Length: 04 (4)
+			Parameter Request List Item: 01 (Subnet Mask)
+			Parameter Request List Item: 03 (Router)
+			Parameter Request List Item: 06 (DNS Name Server)
+			Parameter Request List Item: 2a (NTP Servers)
+		End: ff (End)
+		Padding: 00
+
+Trame 4 :
+
+	ETHERNET :
+		Adresse Mac Destination: 00:0b:82:01:fc:42
+		Adresse Mac Source: 00:08:74:ad:f1:9b
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x0148 (328 octets)
+		Identifier: 0x0445
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x80 (128)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x0000
+		Adresse IP Source: 0xc0a80001 (192.168.0.1)
+		Adresse IP Destination: 0xc0a8000a (192.168.0.10)
+	UDP : 
+		Source Port: 0x0043 (67)
+		Destination Port: 0x0044 (68)
+		Lenght: 0x0134 (308 octets)
+		Checksum: 0x2233 (8755)
+	DHCP : 
+		Operation Code: 0x02 (Boot Reply)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x00003d1d (15645)
+		Seconds: 0x0000 (0 seconds)
+		Flags: 0x0000000000000000
+			Boardcast Flags: 0x0 (unicast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0xc0a8000a (192.168.0.10)
+		Server IP Adress: 0xc0a80001 (192.168.0.1)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0x000b8201fc42 (00:0b:82:01:fc:42)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 02 (Offer)
+		Subnet Mask: 01 (Subnet Mask)
+			Length: 04 (4)
+			Subnet Mask: ffffff00 (255.255.255.0)
+		Release Time Value: 3a (Release Time Value)
+			Length: 04 (4)
+			Release Time Value: 00000708 (0 hours, 30 minutes, 0 seconds)
+		Rebinding Time Value: 3b (Rebinding Time Value)
+			Length: 04 (4)
+			Rebinding Time Value: 00000c4e (0 hours, 52 minutes, 30 seconds)
+		IP Address Lease: 33 (IP Address Lease)
+			Length: 04 (4)
+			IP Address Lease: 00000e10 (1 hours, 0 minutes, 0 seconds)
+		DHCP Server Identifier: 36 (DHCP Server Identifier)
+			Length: 04 (4)
+			DHCP Server Identifier: c0a80001 (192.168.0.1)
+		End: ff (End)
+		Padding: 00
+
+Trame 5 :
+
+	ETHERNET :
+		Adresse Mac Destination: ff:ff:ff:ff:ff:ff
+		Adresse Mac Source: 00:0b:82:01:fc:42
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x012c (300 octets)
+		Identifier: 0xa837
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0xfa (250)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x178a
+		Adresse IP Source: 0x00000000 (0.0.0.0)
+		Adresse IP Destination: 0xffffffff (255.255.255.255)
+	UDP : 
+		Source Port: 0x0044 (68)
+		Destination Port: 0x0043 (67)
+		Lenght: 0x0118 (280 octets)
+		Checksum: 0x9fbd (40893)
+	DHCP : 
+		Operation Code: 0x01 (Boot Request)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x00003d1e (15646)
+		Seconds: 0x0000 (0 seconds)
+		Flags: 0x0000000000000000
+			Boardcast Flags: 0x0 (unicast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0x00000000 (0.0.0.0)
+		Server IP Adress: 0x00000000 (0.0.0.0)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0x000b8201fc42 (00:0b:82:01:fc:42)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 03 (Request)
+		Client Identifier: 3d (Client Identifier)
+			Length: 07 (7)
+			Hardware Type: 01
+			Client MAC Address: 00:0b:82:01:fc:42
+		Request IP Address: 32 (Request IP Address)
+			Length: 04 (4)
+			Request IP Address: c0a8000a (192.168.0.10)
+		DHCP Server Identifier: 36 (DHCP Server Identifier)
+			Length: 04 (4)
+			DHCP Server Identifier: c0a80001 (192.168.0.1)
+		Parameter Request List: 37 (Parameter Request List)
+			Length: 04 (4)
+			Parameter Request List Item: 01 (Subnet Mask)
+			Parameter Request List Item: 03 (Router)
+			Parameter Request List Item: 06 (DNS Name Server)
+			Parameter Request List Item: 2a (NTP Servers)
+		End: ff (End)
+		Padding: 00
+
+Trame 6 :
+
+	ETHERNET :
+		Adresse Mac Destination: 00:0b:82:01:fc:42
+		Adresse Mac Source: 00:08:74:ad:f1:9b
+		Protocol: 0x0800 (IPv4)
+	IP : 
+		Version: 0x4 (IPv4)
+		Header length: 0x5 (20)
+		Type of service: 0x00
+		Total Length: 0x0148 (328 octets)
+		Identifier: 0x0446
+		Flags: 0x0000
+			Reserve: 0
+			DF: 0
+			MF: 0
+			Fragment offset: 0x0 (0 octets)
+		Time To Live: 0x80 (128)
+		Protocol: 0x11 (UDP)
+		Header checksum: 0x0000
+		Adresse IP Source: 0xc0a80001 (192.168.0.1)
+		Adresse IP Destination: 0xc0a8000a (192.168.0.10)
+	UDP : 
+		Source Port: 0x0043 (67)
+		Destination Port: 0x0044 (68)
+		Lenght: 0x0134 (308 octets)
+		Checksum: 0xdfdb (57307)
+	DHCP : 
+		Operation Code: 0x02 (Boot Reply)
+		Hardware Type: 0x01 (Ethernet)
+		Hardware Address Length: 0x06 (6)
+		Hops: 0x00
+		Transaction Identifier: 0x00003d1e (15646)
+		Seconds: 0x0000 (0 seconds)
+		Flags: 0x0000000000000000
+			Boardcast Flags: 0x0 (unicast)
+			Reserved Flags: 0x000000000000000
+		Client IP Adress: 0x00000000 (0.0.0.0)
+		Your IP Adress: 0xc0a8000a (192.168.0.10)
+		Server IP Adress: 0x00000000 (0.0.0.0)
+		Gateway IP Adress: 0x00000000 (0.0.0.0)
+		Client Hardware Adress: 0x000b8201fc42 (00:0b:82:01:fc:42)
+		Server Host Name: Not given
+		Boot File Name: Not given
+		Magic cookie: Magic cookie
+		DHCP Message Type: 35 (DHCP Message Type)
+			Length: 01 (1)
+			DHCP Message Type: 05 (ACK)
+		Release Time Value: 3a (Release Time Value)
+			Length: 04 (4)
+			Release Time Value: 00000708 (0 hours, 30 minutes, 0 seconds)
+		Rebinding Time Value: 3b (Rebinding Time Value)
+			Length: 04 (4)
+			Rebinding Time Value: 00000c4e (0 hours, 52 minutes, 30 seconds)
+		IP Address Lease: 33 (IP Address Lease)
+			Length: 04 (4)
+			IP Address Lease: 00000e10 (1 hours, 0 minutes, 0 seconds)
+		DHCP Server Identifier: 36 (DHCP Server Identifier)
+			Length: 04 (4)
+			DHCP Server Identifier: c0a80001 (192.168.0.1)
+		Subnet Mask: 01 (Subnet Mask)
+			Length: 04 (4)
+			Subnet Mask: ffffff00 (255.255.255.0)
+		End: ff (End)
+		Padding: 00
 

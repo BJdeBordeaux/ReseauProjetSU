@@ -2,6 +2,15 @@ dico_type_eternet = {
 	"0800" : "IPv4",
 }
 
+dico_type_ip_option = {
+	"00" : "End of Operation",
+	"01" : "No Operation",
+	"07" : "Record Route",
+	"44" : "TimeStamp",
+	"83" : "Loose Routing",
+	"89" : "Strict Routing",
+}
+
 dico_type_udp = {
 	"0035" : "DNS",
 	"0043" : "DHCP",
@@ -50,7 +59,7 @@ dico_type_dns_RA = {
 
 dico_type_erreur = {
 	"-1" : "octet non valide",
-	"-2" : "ligne incomplète"
+	"-2" : "ligne incomplete"
 }
 
 dico_type_ip_protocol = {
@@ -132,7 +141,7 @@ def liste_hex_2_ASCII(Liste):
 def info_erreur(erreur_str, longueur_trame):
 	"""
 	str * int -> str
-	contruire la chaîne de caractères représentant l'erreur
+	contruire la chaîne de caracteres representant l'erreur
 	"""
 	information_erreur = ""
 	if erreur_str in dico_type_erreur:
@@ -161,7 +170,7 @@ def est_hex(cara):
 def offset_valide(offset):
 	"""
 	str -> bool
-	vérifier si le format des offset de la trame est valide
+	verifier si le format des offset de la trame est valide
 	"""
 	if len(offset) < 3:
 		return False
@@ -175,7 +184,7 @@ def offset_valide(offset):
 def octet_valide(octet):
 	"""
 	str -> bool
-	vérifier si le format des octets de la trame est valide
+	verifier si le format des octets de la trame est valide
 	"""
 	if len(octet) != 2:
 		return False
@@ -190,7 +199,7 @@ def octet_valide(octet):
 def liste_brute_2_liste(Liste):
 	"""
 	list[str] -> list[list[str]]
-	convertir d'une liste composée de string représentant les lignes en une liste des listes et chaque liste intérieure est une trame
+	convertir d'une liste composee de string representant les lignes en une liste des listes et chaque liste interieure est une trame
 	"""
 	liste_brute = []
 	trame_courante = []
@@ -202,7 +211,6 @@ def liste_brute_2_liste(Liste):
 	for indice_ligne in range(len(Liste)):
 		offset_de_la_ligne = Liste[indice_ligne][0] # qui doit etre offset
 		offset_en_hex = int(offset_de_la_ligne, base = 16)
-		# print("indice ligne = " + str(indice_ligne) + ", offset : " + offset_de_la_ligne)
 		if offset_valide(offset_de_la_ligne) :
 			if offset_en_hex == 0:
 				if not ignorer_ligne:
@@ -220,32 +228,25 @@ def liste_brute_2_liste(Liste):
 			if ignorer_ligne == False:
 				if indice_ligne < len(Liste)-1 and offset_en_hex != 0:
 					# en cas d'erreur
-					# determiner s'il s'agit d'octet invalide ou ligne incomplète
+					# determiner s'il s'agit d'octet invalide ou ligne incomplete
 					# une information pour indiquer une erreur dans le fichier
 					if len(trame_courante) < offset_en_hex:
 						# le cas d'octet invalide
 						if octet_invalide:
-							# print("point d'arret, offset détecté : "
-								# + str(hex(point_darret)) + "," + "0x" + offset_de_la_ligne + ", trame " + str(len(liste_brute)))
 							trame_courante.append("-1")
-							
+						
+						# le cas de ligne incomplète
 						else:
-							# print("offset reel, offset détecté : "
-								# + str(hex(len(trame_courante))) + "," + "0x" +  offset_de_la_ligne)
 							trame_courante.append("-2")
 						liste_brute.append(trame_courante)
 						ignorer_ligne = True
 
-				# on supprime des éléments qui ne sont pas attendu par l'offset
+				# on supprime des elements qui ne sont pas attendu par l'offset
 				while(len(trame_courante) > offset_en_hex):
 					trame_courante.pop()
-					#if(len(liste_brute) < 3):
-					#	print(())
 				point_darret=len(trame_courante)
 				if point_darret == offset_en_hex:
 					ignorer_element = False
-				#if(len(liste_brute) < 3):
-				#	print(Liste[indice_ligne], ignorer_element, ignorer_ligne, point_darret, offset_en_hex)
 				
 				# on prend des octets dans la ligne
 				for indice_element in range(1, len(Liste[indice_ligne])):
@@ -261,7 +262,8 @@ def liste_brute_2_liste(Liste):
 							octet_invalide = True
 
 					
-				else: # pour la dernière ligne
+				# # pour la derniere ligne
+				if indice_ligne == len(Liste) - 1:
 					for indice_element in range(1, len(Liste[indice_ligne])):
 						element_courant = Liste[indice_ligne][indice_element]
 						if octet_valide(element_courant) and not ignorer_element:
@@ -272,11 +274,11 @@ def liste_brute_2_liste(Liste):
 							if(len(element_courant) == 2):
 								octet_invalide = True
 
-				# dernière ligne, sans vérification avec offset
+				# derniere ligne, sans verification avec offset
 				if indice_ligne == len(Liste)-1:
 					liste_brute.append(trame_courante)
 
-	del liste_brute[0] # cet élément est une liste vide
+	del liste_brute[0] # cet element est une liste vide
 	return liste_brute
 
 def constructeur_chaine_caracteres(indentation, champs, valeur, interpretation = ""):
@@ -296,8 +298,17 @@ def constructeur_chaine_caracteres(indentation, champs, valeur, interpretation =
 def verificateur_avant_constructeur(Liste, position_debut, position_fin):
 	"""
 	list[str]*int*int -> bool
-	détermine si les octets sont suffisant pour remplir un champs
+	determine si les octets sont suffisant pour remplir un champs
 	"""
 	if(len(Liste) >= position_fin):
 		return True
 	return False
+
+def debug_print_trame(Liste_trame, pos_db = 0, pos_fin = -1):
+	res = ""
+	if pos_fin < 0:
+		res = ",".join(Liste_trame[pos_db:])
+	else:
+		res = ",".join(Liste_trame[pos_db:pos_fin])
+	print(res)
+	return res

@@ -44,15 +44,15 @@ def octet_valide(octet):
 
 	return True
 
-# Créer la structure générale des trames : créer une liste composée de listes et chaque liste est une trame
+# Creer la structure generale des trames : creer une liste composee de listes et chaque liste est une trame
 def liste_brute_2_liste(L):
 	LL = []
 	tmp = []
 	indice_element = 0
 	#pour chaque ligne
 	for i in range(len(L)):
-		# si elle commence par un offset 0, on crée une nouvelle liste
-		# et met la liste précédente dans la liste extérieure
+		# si elle commence par un offset 0, on cree une nouvelle liste
+		# et met la liste precedente dans la liste exterieure
 		premier_element = L[i][0]
 		if offset_valide(premier_element) and int(premier_element, base = 16) == 0:
 			LL.append(tmp)
@@ -60,7 +60,7 @@ def liste_brute_2_liste(L):
 			# indice de l'element dans la ligne
 			indice_element = 0
 
-		# s'il ne s'agit pas ni de la première ligne, ni de la dernière d'une trame
+		# s'il ne s'agit pas ni de la premiere ligne, ni de la derniere d'une trame
 		if i < len(L)-1 and int(premier_element, base = 16) == 0:
 			indice_element += 1
 
@@ -97,7 +97,7 @@ def LLtoLLclean(LL):
 	del res[0]
 	return res
 
-# Renvoie un str représentant l'entête ETHERNET
+# Renvoie un str representant l'entête ETHERNET
 def analyse_ethernet(L):
 	res = "\tETHERNET :\n"
 	macDst=tools.LStrToMac(L[0:6])
@@ -117,7 +117,7 @@ def un_truc(indentation, champs, valeur, interpretation=""):
 	res += "\n"
 	return res
 
-# Renvoie un str représentant l'entête IP
+# Renvoie un str representant l'entête IP
 def analyse_IP(L):
 	res = "\tIP : \n"
 	res += "		Version : 0x"+str(L[14][0])+" ("+str(L[14][0])+")"+"\n"
@@ -142,7 +142,7 @@ def analyse_IP(L):
 	
 	return res,int(L[14][1])*4+14
 
-# Renvoie un str représentant l'entête TCP
+# Renvoie un str representant l'entête TCP
 def analyseTCP(L):
 	a,i=analyse_IP(L)
 	res = "\tTCP : \n"
@@ -168,7 +168,7 @@ def analyseTCP(L):
 	res += "		Urgent Pointer : "+tools.LStrToStr(L[i+18:i+20])+"("+tools.LStrToPort(L[i+18:i+20])+")"+"\n"
 	return res,int("0b"+Lb[0]+Lb[1]+Lb[2]+Lb[3], base=2)*4+i
 
-# Renvoie un str représentant l'entête HTTP
+# Renvoie un str representant l'entête HTTP
 def analyseHTTP(L):
 	a,i=analyseTCP(L)
 	tmp=list()

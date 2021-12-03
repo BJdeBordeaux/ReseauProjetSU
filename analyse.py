@@ -40,6 +40,7 @@ def analyse_IP(Liste):
 	"""
 	res = "\tIP : \n"
 	proto = ""
+	option = False
 
 	position_debut = 0
 	position_fin = 1
@@ -47,6 +48,8 @@ def analyse_IP(Liste):
 		res += tools.constructeur_chaine_caracteres(2, "Version", "0x" + Liste[position_debut:position_fin][0][0], "IPv" + Liste[position_debut:position_fin][0][0])	
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Header length", "0x" + Liste[position_debut:position_fin][0][1], str(int(Liste[position_debut:position_fin][0][1], base = 16)*4))
+		if Liste[position_debut:position_fin][0][1] == "f":
+			option = True
 
 	position_debut = position_fin
 	position_fin = 2
@@ -102,19 +105,58 @@ def analyse_IP(Liste):
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Destination", "0x" + "".join(Liste[position_debut:position_fin]), ".".join(ip))	
 	
-	return res, proto
+	return res, proto, option
 
-# à écrire
+# a écrire
 def analyse_IP_option(Liste):
 	"""
 	list[str] -> str
 	Renvoyer un str représentant l'entête IP option
 	"""
-	res = "\tOPTION IP : \n"
-
+	res = "\t\tOPTION IP : \n"
+	indentation = 3
+	position_debut = 0
+	position_fin = 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		sous_liste = Liste[position_debut:position_fin]
+		valeur = "".join(sous_liste)
+		interpretation = "inconnu" if valeur not in tools.dico_type_ip_option else tools.dico_type_ip_option.get(valeur)
+		res += tools.constructeur_chaine_caracteres(indentation, "Type", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		sous_liste = Liste[position_debut:position_fin]
+		valeur = "".join(sous_liste)
+		longueur_en_int = int(valeur, 16)
+		interpretation = tools.liste_hex_2_dec(sous_liste)
+		res += tools.constructeur_chaine_caracteres(indentation, "Length", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = 3
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		sous_liste = Liste[position_debut:position_fin]
+		valeur = "".join(sous_liste)
+		interpretation = tools.liste_hex_2_dec(sous_liste)
+		res += tools.constructeur_chaine_caracteres(indentation, "Pointer", "0x" + valeur, interpretation)
+	position_debut = position_fin
+	position_fin = longueur_en_int
+	for index_routeur in range((position_fin-3)//4):
+		if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+			sous_liste = Liste[position_debut+index_routeur*4:position_debut+index_routeur*4+4]
+			valeur = "".join(sous_liste)
+			interpretation = tools.liste_hex_2_IP(sous_liste)
+			res += tools.constructeur_chaine_caracteres(indentation, "Router", "0x" + valeur, interpretation)
+			position_debut += 4
+			position_fin += 4
+	position_fin = 40
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		sous_liste = Liste[position_debut:position_fin]
+		
+		valeur = "".join(sous_liste)
+		interpretation = tools.liste_hex_2_dec(sous_liste)
+		res += tools.constructeur_chaine_caracteres(indentation, "Pading", valeur)
 	return res
 
-# à écrire
+# a écrire
 def analyse_UDP(Liste):
 	"""
 	list[str] -> str
@@ -196,9 +238,9 @@ def analyse_DNS(Liste):
 	position_fin = position_debut + 1
 	name =''
 	label=0
-# Tant que l'on ne rencontre pas de 0x00 on continue à lire le nom
+# Tant que l'on ne rencontre pas de 0x00 on continue a lire le nom
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
-# On prend la taille du label à lire
+# On prend la taille du label a lire
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			position_debut = position_fin
@@ -263,7 +305,7 @@ def analyse_DNS(Liste):
 	#print(Liste[position_debut:position_fin])
 	return res
 
-# à écrire
+# a écrire
 def analyse_DHCP(Liste):
 	"""
 	list[str] -> str
@@ -373,7 +415,7 @@ def analyse_DHCP(Liste):
 	position_fin = 241
 	
 	res += analyse_DHCP_option(Liste[position_debut:])
-
+	
 	return res
 
 def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
@@ -384,10 +426,10 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 	position_fin = position_debut + 1
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
 		if Liste[position_debut:position_fin][0] == "c0":
-			# On passe à l'octet qui nous indique ou lire le label
+			# On passe a l'octet qui nous indique ou lire le label
 			position_debut = position_fin
 			position_fin = position_debut + 1
-			# On se place à l'endroit indiqué par l'octet au dessus
+			# On se place a l'endroit indiqué par l'octet au dessus
 			debut_aux = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 			fin_aux = debut_aux + 1
 			while int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0 and Liste[debut_aux:fin_aux][0] !="c0":
@@ -409,7 +451,7 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			break
-		# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
+		# On prend la taille du label a lire dans le cas ou l'on doit le lire dans les octets qui suivent
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			# On lit chacun des octets jusqu'a la fin du label
@@ -497,7 +539,7 @@ def cnamef(Liste, position_debut,position_fin, res):
 			#position_debut = position_fin
 			#position_fin = position_debut + 1
 			break
-			# On prend la taille du label à lire
+			# On prend la taille du label a lire
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			position_debut = position_fin
@@ -544,7 +586,7 @@ def mnamef(Liste, position_debut,position_fin, res):
 			#position_debut = position_fin
 			#position_fin = position_debut + 1
 			break
-			# On prend la taille du label à lire
+			# On prend la taille du label a lire
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			position_debut = position_fin
@@ -593,10 +635,10 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	position_fin = position_debut + 1
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0: 
 		if Liste[position_debut:position_fin][0] == "c0":
-			# On passe à l'octet qui nous indique ou lire le label
+			# On passe a l'octet qui nous indique ou lire le label
 			position_debut = position_fin
 			position_fin = position_debut + 1
-			# On se place à l'endroit indiqué par l'octet au dessus
+			# On se place a l'endroit indiqué par l'octet au dessus
 			debut_aux = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 			fin_aux = debut_aux + 1
 			while int(tools.liste_hex_2_dec(Liste[debut_aux:fin_aux])) != 0 and Liste[debut_aux:fin_aux][0] !="c0":
@@ -618,7 +660,7 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			break
-		# On prend la taille du label à lire dans le cas ou l'on doit le lire dans les octets qui suivent
+		# On prend la taille du label a lire dans le cas ou l'on doit le lire dans les octets qui suivent
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			# On lit chacun des octets jusqu'a la fin du label
@@ -699,6 +741,8 @@ def analyse_DHCP_option(Liste):
 	position_debut = 0
 	position_fin = 1
 	res = ""
+	
+	# res += (str(position_debut) + ";" + str(position_fin) + ";" + ",".join(Liste[position_debut:position_fin]))
 	# initialisation des variables
 	tag_option = Liste[position_debut]
 	longueur_data = 0
@@ -716,54 +760,77 @@ def analyse_DHCP_option(Liste):
 		
 
 		if(len(Liste[position_debut:]) <= 2): # option format non valide
-			res += "Format DHCP option non valide.\n"
+			res += "Format DHCP option non valide.Interruption d'analyse.\n"
 			break
 		# DHCP option : type, longueur, valeur
 		longueur_data = Liste[position_debut+1]
 		longueur_data_en_int = int(Liste[position_debut+1], 16)
-		position_fin = position_debut + int(longueur_data, 16) + 2
-		champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
-		res += tools.constructeur_chaine_caracteres(2, champs, Liste[position_debut], interpretation)
-		res += tools.constructeur_chaine_caracteres(3, "Length", longueur_data, str(longueur_data_en_int))
-		indentation = 3
-		interpretation_sous_champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
-		valeur_en_liste = Liste[position_debut+2:position_fin]
-		valeur_chainee = "".join(valeur_en_liste)
-		if tag_option in tools.dhcp_option_liste_interpretation_dico:
-			if tag_option == "35": # DHCP Message Type
-				interpretation_sous_champs = "inconnu" if valeur_chainee not in tools.dico_type_dhcp else tools.dico_type_dhcp.get(valeur_chainee)
-			elif tag_option == "74": # DHCP Auto-configuration
-				interpretation_sous_champs = "Set" if valeur_chainee == "01" else "Not Set"
-			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
-		elif tag_option in tools.dhcp_option_liste_interpretation_IP:
-			for cpt in range(longueur_data_en_int//4):
-				interpretation_sous_champs = tools.liste_hex_2_IP(valeur_en_liste[cpt:cpt+4])
-				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee[cpt*8:cpt*8+8], interpretation_sous_champs)
-		elif tag_option in tools.dhcp_option_liste_interpretation_temps:
-			interpretation_sous_champs = tools.sec_to_hours(int(valeur_chainee, 16))
-			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
-		elif tag_option in tools.dhcp_option_liste_interpretation_chaine:
-			interpretation_sous_champs = bytes.fromhex(valeur_chainee).decode("ASCII")
-			res += tools.constructeur_chaine_caracteres(indentation, champs, interpretation_sous_champs)
-		elif tag_option in tools.dhcp_option_liste_interpretation_multichamps:
-			if tag_option == "37": # Parameter Request List
-				# champs, valeur_chainee, interpretation = 
-				for cpt in range(len(valeur_en_liste)):
-					res += tools.constructeur_chaine_caracteres(indentation, champs + " Item", valeur_en_liste[cpt], "" if valeur_en_liste[cpt] not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(valeur_en_liste[cpt]))
-			elif tag_option == "3d": # Client Identifier
-				res += tools.constructeur_chaine_caracteres(indentation, "Hardware Type", valeur_en_liste[0], "Ethernet" if valeur_chainee[0] == "01" else "")
-				res += tools.constructeur_chaine_caracteres(indentation, "Client MAC Address", tools.liste_hex_2_MAC(valeur_en_liste[1:]))
-		else :
+		position_fin = position_debut + longueur_data_en_int + 2
+		if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+			# information sur option
+			champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
+			res += tools.constructeur_chaine_caracteres(2, champs, Liste[position_debut], interpretation)
+			res += tools.constructeur_chaine_caracteres(3, "Length", longueur_data, str(longueur_data_en_int))
+			
+			# valeur par defaut
+			indentation = 3
+			interpretation_sous_champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
+			valeur_en_liste = Liste[position_debut+2:position_fin]
+			valeur_chainee = "".join(valeur_en_liste)
+
+			# pour differents types de champs, on va dans le bloc correspondant
+			# dico
+			if tag_option in tools.dhcp_option_liste_interpretation_dico:
+				if tag_option == "35": # DHCP Message Type
+					interpretation_sous_champs = "inconnu" if valeur_chainee not in tools.dico_type_dhcp else tools.dico_type_dhcp.get(valeur_chainee)
+				elif tag_option == "74": # DHCP Auto-configuration
+					interpretation_sous_champs = "Set" if valeur_chainee == "01" else "Not Set"
+				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
+			
+			# adresse IP 
+			elif tag_option in tools.dhcp_option_liste_interpretation_IP:
+				for cpt in range(longueur_data_en_int//4):
+					interpretation_sous_champs = tools.liste_hex_2_IP(valeur_en_liste[cpt:cpt+4])
+					res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee[cpt*8:cpt*8+8], interpretation_sous_champs)
+			
+			# temps
+			elif tag_option in tools.dhcp_option_liste_interpretation_temps:
+				interpretation_sous_champs = tools.sec_to_hours(int(valeur_chainee, 16))
+				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee, interpretation_sous_champs)
+			
+			# chaine de caractères
+			elif tag_option in tools.dhcp_option_liste_interpretation_chaine:
+				interpretation_sous_champs = bytes.fromhex(valeur_chainee).decode("ASCII")
+				res += tools.constructeur_chaine_caracteres(indentation, champs, interpretation_sous_champs)
+			
+			# plusieurs champs
+			elif tag_option in tools.dhcp_option_liste_interpretation_multichamps:
+				if tag_option == "37": # Parameter Request List
+					# champs, valeur_chainee, interpretation = 
+					for cpt in range(len(valeur_en_liste)):
+						res += tools.constructeur_chaine_caracteres(indentation, champs + " Item", valeur_en_liste[cpt], "" if valeur_en_liste[cpt] not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(valeur_en_liste[cpt]))
+				elif tag_option == "3d": # Client Identifier
+					res += tools.constructeur_chaine_caracteres(indentation, "Hardware Type", valeur_en_liste[0], "Ethernet" if valeur_chainee[0] == "01" else "")
+					res += tools.constructeur_chaine_caracteres(indentation, "Client MAC Address", tools.liste_hex_2_MAC(valeur_en_liste[1:]))
+			
 			# on ne connait pas le protocol, et on imprime les octets directement
-			res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee)
-		position_debut = position_fin
-		position_fin += 1
-	tag_option = Liste[position_debut]
-	if tag_option == "ff":
-		res += tools.constructeur_chaine_caracteres(2, "Option", tag_option, tools.dico_option_dhcp.get(tag_option))
-		position_debut = position_fin
-		position_fin += 1
-	elif tag_option == "00":
-		nb_00 = len(Liste[position_debut:])
-		res += tools.constructeur_chaine_caracteres(2, "Padding", nb_00*"00")
+			else :
+				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee)
+			
+			#deplacer le pointeur de position
+			# if(tag_option == "0c"):
+				
+			position_debut = position_fin
+			position_fin += 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		tag_option = Liste[position_debut]
+		if tag_option == "ff":
+			res += tools.constructeur_chaine_caracteres(2, "End", tag_option, tools.dico_option_dhcp.get(tag_option))
+			position_debut = position_fin
+			position_fin += 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		tag_option = Liste[position_debut]
+		if tag_option == "00":
+			nb_00 = len(Liste[position_debut:])
+			res += tools.constructeur_chaine_caracteres(2, "Padding", ",".join(Liste[position_debut:position_fin]))
 	return res

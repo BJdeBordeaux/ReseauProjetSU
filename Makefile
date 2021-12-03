@@ -25,6 +25,9 @@ dhcp2:
 dhcp3:
 	python3 main.py dhcp3.txt res.txt && cat res.txt
 
+ipo:
+	python3 main.py ip_option.txt res.txt && cat res.txt
+
 trame:
 	python3 main.py trame.txt res.txt && cat res.txt
 
