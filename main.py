@@ -1,7 +1,9 @@
 import tools, analyse, sys
 
 if len(sys.argv) != 3: # verifier s'il y a 2 arguments :  fichiers source et destination
-	print("Erreur : Usage : <nom du fichier source> <nom du fichier destination>")
+	print("Usage : <nom du fichier source> <nom du fichier destination>")
+	print("Exemple:")
+	print("python3 main.py trame.txt res.txt")
 	exit()
 
 # Verifier l'existence du fichier source
@@ -16,8 +18,7 @@ liste_brut = list()
 
 # Construit une liste brute a partir d'un fichier text
 # les elements sont des string representant une ligne
-for line in fichier_source:
-	liste_brut.extend(line.split("\t"))
+liste_brut = fichier_source.readlines()
 
 # Construire une liste de listes, dont chacun represente une trame
 # list[list[str]]
@@ -54,6 +55,8 @@ for index_trame in range(len(liste)):
 	if(not tools.octet_valide(liste[index_trame][-1])):
 		information_erreur += tools.info_erreur(liste[index_trame][-1], len(liste[index_trame]))
 		liste[index_trame].pop()
+	
+	# en cas d'exception, passe a la trame prochaine
 	try :
 		# analyse Ethernet
 		position_courante = 0
@@ -69,24 +72,24 @@ for index_trame in range(len(liste)):
 			prochain_protocol = res_annalyse_IP[1]
 			IP_option_set = res_annalyse_IP[2]
 
-			# analyse option IP
 			if len(liste[index_trame]) > position_courante:
+				
+				# analyse option IP
 				if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
 					res += "Longueur IP non valide. Passe a la trame prochaine.\n"
 					continue
 				if IP_option_set == True:
 					res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
 					position_courante += longueur_IP_option
-			#tools.debug_print_trame(liste[index_trame])
+				
 				# analyse UDP
-			
-			#if len(liste[index_trame]) > position_courante:
 				if prochain_protocol == "UDP":
 					res_annalyse_UDP = analyse.analyse_UDP(liste[index_trame][position_courante:])
 					res+= res_annalyse_UDP[0]
 					position_courante += longueur_UDP
 					prochain_app =res_annalyse_UDP[1]
 					
+					# analyse DNS et DHCP
 					if prochain_app == "DNS":
 						res += analyse.analyse_DNS(liste[index_trame][position_courante:])
 					elif prochain_app == "DHCP":
@@ -97,13 +100,14 @@ for index_trame in range(len(liste)):
 				else:
 					res += "Protocol couche 4 non supporte. Passe a la trame prochaine.\n"
 					continue
+
 		# ajout d'information d'erreur a la fin
 		res += information_erreur
-	except IndexError:
+	
+	except:
 		continue
 
 # Ecrire le trame dans le fichier destination
-
 fichier_destination.write(res+"\n")
 
 # Ferme les fichiers

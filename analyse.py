@@ -7,19 +7,22 @@ def analyse_ethernet(Liste):
 	Renvoyer un str représentant l'entête ETHERNET
 	"""
 	res = "\tETHERNET :\n"
-# Lecture de l'adresse Mac Destination
+
+	# Lecture de l'adresse Mac Destination
+	# L'utilisation de indice de position permet d'avoir recuperer plus d'informations possibles
+	# en cas d'erreur
 	position_debut = 0
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse Mac Destination", ":".join(Liste[position_debut:position_fin]))
 	
-# Lecture de l'adresse Mac Source	
+	# Lecture de l'adresse Mac Source	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse Mac Source", ":".join(Liste[position_debut:position_fin]))
 
-# Lecture du type de protocole	
+	# Lecture du type de protocole	
 	position_debut = position_fin
 	position_fin = 14
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -38,14 +41,17 @@ def analyse_IP(Liste):
 	list[str] -> str
 	Renvoyer un str représentant l'entête IP
 	"""
+	# valeur de retour par defaut
 	res = "\tIP : \n"
 	proto = ""
 	option = False
 
+	# champs de IP
 	position_debut = 0
 	position_fin = 1
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Version", "0x" + Liste[position_debut:position_fin][0][0], "IPv" + Liste[position_debut:position_fin][0][0])	
+	
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Header length", "0x" + Liste[position_debut:position_fin][0][1], str(int(Liste[position_debut:position_fin][0][1], base = 16)*4))
 		if Liste[position_debut:position_fin][0][1] == "f":
@@ -87,6 +93,7 @@ def analyse_IP(Liste):
 		protocol_hex = "".join(Liste[position_debut:position_fin])
 		proto = "inconnu" if protocol_hex not in tools.dico_type_ip_protocol else tools.dico_type_ip_protocol.get(protocol_hex)
 		res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, proto)
+	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -107,14 +114,17 @@ def analyse_IP(Liste):
 	
 	return res, proto, option
 
-# a écrire
 def analyse_IP_option(Liste):
 	"""
 	list[str] -> str
 	Renvoyer un str représentant l'entête IP option
 	"""
 	res = "\t\tOPTION IP : \n"
+	
+	# parametre par defaut
 	indentation = 3
+	
+	# analyse des champs
 	position_debut = 0
 	position_fin = 1
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -122,6 +132,7 @@ def analyse_IP_option(Liste):
 		valeur = "".join(sous_liste)
 		interpretation = "inconnu" if valeur not in tools.dico_type_ip_option else tools.dico_type_ip_option.get(valeur)
 		res += tools.constructeur_chaine_caracteres(indentation, "Type", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -130,6 +141,7 @@ def analyse_IP_option(Liste):
 		longueur_en_int = int(valeur, 16)
 		interpretation = tools.liste_hex_2_dec(sous_liste)
 		res += tools.constructeur_chaine_caracteres(indentation, "Length", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 3
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -137,6 +149,7 @@ def analyse_IP_option(Liste):
 		valeur = "".join(sous_liste)
 		interpretation = tools.liste_hex_2_dec(sous_liste)
 		res += tools.constructeur_chaine_caracteres(indentation, "Pointer", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = longueur_en_int
 	for index_routeur in range((position_fin-3)//4):
@@ -147,22 +160,23 @@ def analyse_IP_option(Liste):
 			res += tools.constructeur_chaine_caracteres(indentation, "Router", "0x" + valeur, interpretation)
 			position_debut += 4
 			position_fin += 4
+	
 	position_fin = 40
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
-		sous_liste = Liste[position_debut:position_fin]
-		
+		sous_liste = Liste[position_debut:position_fin]	
 		valeur = "".join(sous_liste)
 		interpretation = tools.liste_hex_2_dec(sous_liste)
 		res += tools.constructeur_chaine_caracteres(indentation, "Pading", valeur)
+	
 	return res
 
-# a écrire
 def analyse_UDP(Liste):
 	"""
 	list[str] -> str
 	Renvoyer un str représentant l'entête UPD
 	"""
 	res = "\tUDP : \n"
+	
 	position_debut = 0
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -171,16 +185,19 @@ def analyse_UDP(Liste):
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
 		else: 
 			app="inconnu"
+	
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Destination Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 		if (app == "inconnu") and tools.dico_type_udp.get("".join(Liste[position_debut:position_fin])) is not None:
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
+	
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Lenght","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")		
+	
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -193,10 +210,12 @@ def analyse_DNS(Liste):
 	Renvoyer un str représentant l'entête DNS
 	"""
 	res = "\tDNS : \n"
+	
 	position_debut = 0
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Transaction ID","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -214,33 +233,40 @@ def analyse_DNS(Liste):
 		res += tools.constructeur_chaine_caracteres(3, ".... .... "+ Lb[8]+"... ....	= Recursion Available", Lb[8],tools.dico_type_dns_RA.get(RA))
 		res += tools.constructeur_chaine_caracteres(3, ".... .... ."+Lb[9:12]+" ....	= Z", int(Lb[9:12]),"Reserved")
 		res += tools.constructeur_chaine_caracteres(3, ".... .... .... "+Lb[12:16]+"	= Reply Code", int(Lb[12:16]), "No Error")
+	
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Questions","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Answers","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	n_answers=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	
 	position_debut = position_fin
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Authority","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	n_authority=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Additional","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	n_additional=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 	res += "\t\tQueries: \n"
+	
 	position_debut = position_fin
 	position_fin = position_debut + 1
 	name =''
 	label=0
-# Tant que l'on ne rencontre pas de 0x00 on continue a lire le nom
+	
+	# Tant que l'on ne rencontre pas de 0x00 on continue a lire le nom
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
-# On prend la taille du label a lire
+	
+	# On prend la taille du label a lire
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			position_debut = position_fin
@@ -249,16 +275,19 @@ def analyse_DNS(Liste):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
 		position_debut = position_fin
 		position_fin = position_debut + 1
-# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+		
+		# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		label += 1
 	lenght=len(name)-1
+	
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Type = tools.constructeur_chaine_caracteres(0, "Type","0x" +"".join(Liste[position_debut:position_fin]),tools.dico_type_dns_typen.get(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))
 		Typen = tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])
+	
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -294,35 +323,28 @@ def analyse_DNS(Liste):
 		position_debut=ret[1]-1
 		position_fin=ret[2]
 		res+=ret[0]
-	#print(Liste[position_debut:position_fin])
-	#ret= DNS_Answer(Liste, nombre, position_debut,position_fin, aux)
-	#position_debut=ret[1]
-	#position_fin=ret[2]
-	#res+=ret[0]	
-	#res+=ret[0]
-	#position_debut=ret[1]
-	#position_fin=ret[2]
-	#print(Liste[position_debut:position_fin])
 	return res
 
-# a écrire
 def analyse_DHCP(Liste):
 	"""
 	list[str] -> str
 	Renvoyer un str représentant l'entête DHCP
 	"""
 	res = "\tDHCP : \n"
+	
 	position_debut = 0
 	position_fin = 1
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = "non connue" if valeur not in tools.dico_opcod_dhcp else tools.dico_opcod_dhcp.get(valeur)
 		res += tools.constructeur_chaine_caracteres(2, "Operation Code", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Hardware Type", "0x" + valeur, "Ethernet" if valeur == "01" else "")
+	
 	position_debut = position_fin
 	position_fin = 3
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -330,23 +352,27 @@ def analyse_DHCP(Liste):
 		interpretation = tools.liste_hex_2_dec(valeur)
 		longueur_hardware = int(interpretation)
 		res += tools.constructeur_chaine_caracteres(2, "Hardware Address Length", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Hops", "0x" + valeur)
+	
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_dec(valeur)
 		res += tools.constructeur_chaine_caracteres(2, "Transaction Identifier", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_dec(valeur) + " seconds"
 		res += tools.constructeur_chaine_caracteres(2, "Seconds", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -358,36 +384,42 @@ def analyse_DHCP(Liste):
 		res += tools.constructeur_chaine_caracteres(3, "Boardcast Flags", "0x" + boardcast_flag, boardcast_interpretation)
 		reserve_flag = valeur[1:]
 		res += tools.constructeur_chaine_caracteres(3, "Reserved Flags", "0x" + reserve_flag)
+	
 	position_debut = position_fin
 	position_fin = 16
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Client IP Adress", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 20
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Your IP Adress", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 24
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Server IP Adress", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 28
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_IP(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Gateway IP Adress", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 44
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
 		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
 		interpretation = tools.liste_hex_2_MAC(Liste[position_debut: position_debut + longueur_hardware])
 		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
+	
 	position_debut = position_fin
 	position_fin = 108
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -397,6 +429,7 @@ def analyse_DHCP(Liste):
 		else:
 			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Server Host Name", interpretation)
+	
 	position_debut = position_fin
 	position_fin = 236
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -406,11 +439,13 @@ def analyse_DHCP(Liste):
 		else:
 			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Boot File Name", interpretation)
+	
 	position_debut = position_fin
 	position_fin = 240
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Magic cookie", "Magic cookie")
+	
 	position_debut = position_fin
 	position_fin = 241
 	
@@ -742,7 +777,6 @@ def analyse_DHCP_option(Liste):
 	position_fin = 1
 	res = ""
 	
-	# res += (str(position_debut) + ";" + str(position_fin) + ";" + ",".join(Liste[position_debut:position_fin]))
 	# initialisation des variables
 	tag_option = Liste[position_debut]
 	longueur_data = 0
@@ -758,15 +792,17 @@ def analyse_DHCP_option(Liste):
 		longueur_totale = 1
 		interpretation = "option non connue" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
 		
-
-		if(len(Liste[position_debut:]) <= 2): # option format non valide
+		# en cas de format non valide
+		if(len(Liste[position_debut:]) <= 2): 
 			res += "Format DHCP option non valide.Interruption d'analyse.\n"
 			break
+		
 		# DHCP option : type, longueur, valeur
 		longueur_data = Liste[position_debut+1]
 		longueur_data_en_int = int(Liste[position_debut+1], 16)
 		position_fin = position_debut + longueur_data_en_int + 2
 		if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+			
 			# information sur option
 			champs = "Option" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
 			res += tools.constructeur_chaine_caracteres(2, champs, Liste[position_debut], interpretation)
@@ -779,6 +815,7 @@ def analyse_DHCP_option(Liste):
 			valeur_chainee = "".join(valeur_en_liste)
 
 			# pour differents types de champs, on va dans le bloc correspondant
+			
 			# dico
 			if tag_option in tools.dhcp_option_liste_interpretation_dico:
 				if tag_option == "35": # DHCP Message Type
@@ -806,7 +843,6 @@ def analyse_DHCP_option(Liste):
 			# plusieurs champs
 			elif tag_option in tools.dhcp_option_liste_interpretation_multichamps:
 				if tag_option == "37": # Parameter Request List
-					# champs, valeur_chainee, interpretation = 
 					for cpt in range(len(valeur_en_liste)):
 						res += tools.constructeur_chaine_caracteres(indentation, champs + " Item", valeur_en_liste[cpt], "" if valeur_en_liste[cpt] not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(valeur_en_liste[cpt]))
 				elif tag_option == "3d": # Client Identifier
@@ -818,19 +854,21 @@ def analyse_DHCP_option(Liste):
 				res += tools.constructeur_chaine_caracteres(indentation, champs, valeur_chainee)
 			
 			#deplacer le pointeur de position
-			# if(tag_option == "0c"):
-				
 			position_debut = position_fin
 			position_fin += 1
+	
+	# a la fin de l'option
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		tag_option = Liste[position_debut]
 		if tag_option == "ff":
 			res += tools.constructeur_chaine_caracteres(2, "End", tag_option, tools.dico_option_dhcp.get(tag_option))
 			position_debut = position_fin
 			position_fin += 1
+	
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		tag_option = Liste[position_debut]
 		if tag_option == "00":
 			nb_00 = len(Liste[position_debut:])
 			res += tools.constructeur_chaine_caracteres(2, "Padding", ",".join(Liste[position_debut:position_fin]))
+	
 	return res
