@@ -1,4 +1,3 @@
-from os import posix_fadvise
 import tools
 
 def analyse_ethernet(Liste):
@@ -27,11 +26,11 @@ def analyse_ethernet(Liste):
 	position_fin = 14
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		type_str = "".join(Liste[position_debut:position_fin])
-		type_hex = tools.dico_type_eternet.get(type_str)
-		if type_hex is not None:
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, type_hex)
+		type_interpretation = tools.dico_type_eternet.get(type_str)
+		if type_interpretation is not None:
+			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, type_interpretation)
 		else: 
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_hex, "inconnu")	
+			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, "inconnu")	
 	
 	return res
 

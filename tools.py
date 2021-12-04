@@ -257,7 +257,7 @@ def liste_brute_2_liste(liste_brute):
 
 			# s'il y a une erreur, on ignore la trame
 			if ignorer_ligne == False:
-				if indice_ligne < len(liste_brute)-1 and offset_en_hex != 0:
+				if indice_ligne < len(liste_brute) and offset_en_hex != 0:
 					
 					# en cas d'erreur
 					# determiner s'il s'agit d'octet invalide ou ligne incomplete
@@ -297,17 +297,18 @@ def liste_brute_2_liste(liste_brute):
 							octet_invalide = True
 
 					
-				# pour la derniere ligne
-				if indice_ligne == len(liste_brute) - 1:
-					for indice_element in range(1, len(liste_brute[indice_ligne])):
-						element_courant = liste_brute[indice_ligne][indice_element]
-						if octet_valide(element_courant) and not ignorer_element:
-							trame_courante.append(element_courant.lower())
-						elif not octet_valide(element_courant): 
-							point_darret = len(trame_courante)
-							ignorer_element = True
-							if(len(element_courant) == 2):
-								octet_invalide = True
+				# # pour la derniere ligne
+				# if indice_ligne == len(liste_brute) - 1:
+				# 	for indice_element in range(1, len(liste_brute[indice_ligne])):
+				# 		element_courant = liste_brute[indice_ligne][indice_element]
+				# 		if octet_valide(element_courant) and not ignorer_element:
+				# 			print(element_courant, "mark2")
+				# 			trame_courante.append(element_courant.lower())
+				# 		elif not octet_valide(element_courant): 
+				# 			point_darret = len(trame_courante)
+				# 			ignorer_element = True
+				# 			if(len(element_courant) == 2):
+				# 				octet_invalide = True
 
 				# derniere ligne du ficher, sans verification avec offset
 				if indice_ligne == len(liste_brute)-1:

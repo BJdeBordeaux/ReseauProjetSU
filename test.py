@@ -57,60 +57,60 @@ for index_trame in range(len(liste)):
 		liste[index_trame].pop()
 	
 	# en cas d'exception, passe a la trame prochaine
-	try :
-		# analyse Ethernet
-		position_courante = 0
-		res += "\n"+analyse.analyse_ethernet(liste[index_trame][position_courante:])
-		position_courante = longueur_ethernet
-		prochain_protocol = ""
-		
-		# analyse IP
-		if len(liste[index_trame]) > position_courante:
-			res_annalyse_IP = analyse.analyse_IP(liste[index_trame][position_courante:])
-			res += res_annalyse_IP[0]
-			position_courante += longueur_IP
-			prochain_protocol = res_annalyse_IP[1]
-			IP_option_set = res_annalyse_IP[2]
-
-			if len(liste[index_trame]) > position_courante:
-				
-				# analyse option IP
-				if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
-					res += "Longueur IP non valide. Passe a la trame prochaine.\n"
-					continue
-				if IP_option_set == True:
-					res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
-					position_courante += longueur_IP_option
-				
-				# analyse UDP
-				if prochain_protocol == "UDP":
-					res_annalyse_UDP = analyse.analyse_UDP(liste[index_trame][position_courante:])
-					res+= res_annalyse_UDP[0]
-					position_courante += longueur_UDP
-					prochain_app =res_annalyse_UDP[1]
-					
-					# analyse DNS et DHCP
-					if prochain_app == "DNS":
-						res += analyse.analyse_DNS(liste[index_trame][position_courante:])
-					elif prochain_app == "DHCP":
-						res += analyse.analyse_DHCP(liste[index_trame][position_courante:])
-					else:
-						res += "Protocol couche 3 non supporte. Passe a la trame prochaine.\n"
-						continue
-				else:
-					res += "Protocol couche 4 non supporte. Passe a la trame prochaine.\n"
-					continue
-
-		# ajout d'information d'erreur a la fin
-		res += information_erreur
+	#try :
+	# analyse Ethernet
+	position_courante = 0
+	res += "\n"+analyse.analyse_ethernet(liste[index_trame][position_courante:])
+	position_courante = longueur_ethernet
+	prochain_protocol = ""
 	
-	except:
-		res += "Une erreur est survenu a partir de l'octet " + str(position_courante) + "\n"
-		continue
+	# analyse IP
+	if len(liste[index_trame]) > position_courante:
+		res_annalyse_IP = analyse.analyse_IP(liste[index_trame][position_courante:])
+		res += res_annalyse_IP[0]
+		position_courante += longueur_IP
+		prochain_protocol = res_annalyse_IP[1]
+		IP_option_set = res_annalyse_IP[2]
+
+		if len(liste[index_trame]) > position_courante:
+			
+			# analyse option IP
+			if liste[index_trame][position_courante-longueur_IP][1].lower() not in ['5', 'f']:
+				res += "Longueur IP non valide. Passe a la trame prochaine.\n"
+				continue
+			if IP_option_set == True:
+				res += analyse.analyse_IP_option(liste[index_trame][position_courante:])
+				position_courante += longueur_IP_option
+			
+			# analyse UDP
+			if prochain_protocol == "UDP":
+				res_annalyse_UDP = analyse.analyse_UDP(liste[index_trame][position_courante:])
+				res+= res_annalyse_UDP[0]
+				position_courante += longueur_UDP
+				prochain_app =res_annalyse_UDP[1]
+				
+				# analyse DNS et DHCP
+				if prochain_app == "DNS":
+					res += analyse.analyse_DNS(liste[index_trame][position_courante:])
+				elif prochain_app == "DHCP":
+					res += analyse.analyse_DHCP(liste[index_trame][position_courante:])
+				else:
+					res += "Protocol couche 3 non supporte. Passe a la trame prochaine.\n"
+					continue
+			else:
+				res += "Protocol couche 4 non supporte. Passe a la trame prochaine.\n"
+				continue
+
+	# ajout d'information d'erreur a la fin
+	res += information_erreur
+
+	#except:
+	#	res += "Une erreur est servenu a partir de l'octet " + str(position_courante) + "\n"
+	#	continue
 
 # Ecrire le trame dans le fichier destination
 fichier_destination.write(res+"\n")
-
+# tools.debug_print_trame(liste[index_trame])
 # Ferme les fichiers
 fichier_destination.close()
 fichier_source.close()
