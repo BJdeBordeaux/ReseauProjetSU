@@ -1,4 +1,5 @@
 import tools
+import tools
 
 def analyse_ethernet(Liste):
 	"""
@@ -536,6 +537,7 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 		position_debut=ret[1]
 		position_fin=ret[2]
 		head="addr"
+
 	res += tools.constructeur_chaine_caracteres(3, name , " type "+ Typen + ", class IN" + ", "+head+" "+ret[0])
 	res += tools.constructeur_chaine_caracteres(4, "Name" , name)
 	res += tools.constructeur_chaine_caracteres(4, "Type" , Typen, Typeall)

@@ -110,7 +110,7 @@ for index_trame in range(len(liste)):
 
 # Ecrire le trame dans le fichier destination
 fichier_destination.write(res+"\n")
-# tools.debug_print_trame(liste[index_trame])
+tools.debug_print_trame(liste[index_trame])
 # Ferme les fichiers
 fichier_destination.close()
 fichier_source.close()
