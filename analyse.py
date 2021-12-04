@@ -15,23 +15,32 @@ def analyse_ethernet(Liste):
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse Mac Destination", ":".join(Liste[position_debut:position_fin]))
-	
-	# Lecture de l'adresse Mac Source	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+
+# Lecture de l'adresse Mac Source	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse Mac Source", ":".join(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 
-	# Lecture du type de protocole	
+# Lecture du type de protocole	
 	position_debut = position_fin
 	position_fin = 14
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		type_str = "".join(Liste[position_debut:position_fin])
-		type_interpretation = tools.dico_type_eternet.get(type_str)
-		if type_interpretation is not None:
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, type_interpretation)
+		type_hex = tools.dico_type_eternet.get(type_str)
+		if type_hex is not None:
+			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, type_hex)
 		else: 
-			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_str, "inconnu")	
+			res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + type_hex, "inconnu")	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	return res
 
