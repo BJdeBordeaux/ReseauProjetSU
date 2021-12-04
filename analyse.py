@@ -1,4 +1,4 @@
-import tools
+from os import posix_fadvise
 import tools
 
 def analyse_ethernet(Liste):
@@ -65,21 +65,33 @@ def analyse_IP(Liste):
 		res += tools.constructeur_chaine_caracteres(2, "Header length", "0x" + Liste[position_debut:position_fin][0][1], str(int(Liste[position_debut:position_fin][0][1], base = 16)*4))
 		if Liste[position_debut:position_fin][0][1] == "f":
 			option = True
-
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+	
 	position_debut = position_fin
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Type of service", "0x" + Liste[position_debut:position_fin][0])
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Total Length", "0x" + "".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Identifier", "0x" + "".join(Liste[position_debut:position_fin]))	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 8
@@ -90,11 +102,17 @@ def analyse_IP(Liste):
 		res += tools.constructeur_chaine_caracteres(3, "DF", Lb[1])
 		res += tools.constructeur_chaine_caracteres(3, "MF", Lb[2])
 		res += tools.constructeur_chaine_caracteres(3, "Fragment offset", str(hex(int(Lb[3:], base = 2))), str(int(Lb[3:], base = 2)*8) + " octets")
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 9
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Time To Live", "0x" + "".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 10
@@ -102,17 +120,26 @@ def analyse_IP(Liste):
 		protocol_hex = "".join(Liste[position_debut:position_fin])
 		proto = "inconnu" if protocol_hex not in tools.dico_type_ip_protocol else tools.dico_type_ip_protocol.get(protocol_hex)
 		res += tools.constructeur_chaine_caracteres(2, "Protocol", "0x" + protocol_hex, proto)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Header checksum", "0x" + "".join(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 16
-	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Source", "0x" + "".join(Liste[position_debut:position_fin]),".".join(ip))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 
 
 	position_debut = position_fin
@@ -120,6 +147,9 @@ def analyse_IP(Liste):
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Adresse IP Destination", "0x" + "".join(Liste[position_debut:position_fin]), ".".join(ip))	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	return res, proto, option
 
@@ -194,23 +224,35 @@ def analyse_UDP(Liste):
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
 		else: 
 			app="inconnu"
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Destination Port","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
 		if (app == "inconnu") and tools.dico_type_udp.get("".join(Liste[position_debut:position_fin])) is not None:
 			app = tools.dico_type_udp.get("".join(Liste[position_debut:position_fin]))
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
+
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Lenght","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]) + " octets")		
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Checksum","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	return res, app
 
 def analyse_DNS(Liste):
@@ -224,7 +266,10 @@ def analyse_DNS(Liste):
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Transaction ID","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -242,50 +287,67 @@ def analyse_DNS(Liste):
 		res += tools.constructeur_chaine_caracteres(3, ".... .... "+ Lb[8]+"... ....	= Recursion Available", Lb[8],tools.dico_type_dns_RA.get(RA))
 		res += tools.constructeur_chaine_caracteres(3, ".... .... ."+Lb[9:12]+" ....	= Z", int(Lb[9:12]),"Reserved")
 		res += tools.constructeur_chaine_caracteres(3, ".... .... .... "+Lb[12:16]+"	= Reply Code", int(Lb[12:16]), "No Error")
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
 	
 	position_debut = position_fin
 	position_fin = 6
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Questions","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Answers","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	n_answers=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+		n_answers=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Authority","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	n_authority=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	
+		n_authority=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(2, "Additional","0x" +"".join(Liste[position_debut:position_fin]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
-	n_additional=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+		n_additional=int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	res += "\t\tQueries: \n"
 	
 	position_debut = position_fin
 	position_fin = position_debut + 1
 	name =''
 	label=0
-	
-	# Tant que l'on ne rencontre pas de 0x00 on continue a lire le nom
+# Tant que l'on ne rencontre pas de 0x00 on continue à lire le nom
 	while int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
-	
-	# On prend la taille du label a lire
+# On prend la taille du label à lire
 		taille = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))	
 		for i in range(taille):
 			position_debut = position_fin
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
+			else :
+				res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+				return res
+	
 		position_debut = position_fin
 		position_fin = position_debut + 1
-		
-		# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
+# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
 		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		label += 1
@@ -296,11 +358,18 @@ def analyse_DNS(Liste):
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Type = tools.constructeur_chaine_caracteres(0, "Type","0x" +"".join(Liste[position_debut:position_fin]),tools.dico_type_dns_typen.get(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))
 		Typen = tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Class = tools.constructeur_chaine_caracteres(0, "Class","0x" +"".join(Liste[position_debut:position_fin]),"Internet")
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	res += tools.constructeur_chaine_caracteres(3, name , " type "+ Typen + ", class IN")
 	res += tools.constructeur_chaine_caracteres(4, "Name" , name)
 	res += tools.constructeur_chaine_caracteres(4, "Name Lenght" , lenght)
@@ -311,7 +380,6 @@ def analyse_DNS(Liste):
 	nombre =1
 	for i in range(n_answers):
 		aux=""
-
 		ret=DNS_Answer(Liste, nombre, position_debut,position_fin, aux)
 		position_debut=ret[1]-1
 		position_fin=ret[2]
@@ -332,7 +400,11 @@ def analyse_DNS(Liste):
 		position_debut=ret[1]-1
 		position_fin=ret[2]
 		res+=ret[0]
+
+	if tools.verificateur_avant_constructeur(Liste, position_fin, position_fin+1):
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame avec excédent d'octets")
 	return res
+
 
 def analyse_DHCP(Liste):
 	"""
@@ -347,13 +419,19 @@ def analyse_DHCP(Liste):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = "non connue" if valeur not in tools.dico_opcod_dhcp else tools.dico_opcod_dhcp.get(valeur)
 		res += tools.constructeur_chaine_caracteres(2, "Operation Code", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Hardware Type", "0x" + valeur, "Ethernet" if valeur == "01" else "")
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 3
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -361,27 +439,39 @@ def analyse_DHCP(Liste):
 		interpretation = tools.liste_hex_2_dec(valeur)
 		longueur_hardware = int(interpretation)
 		res += tools.constructeur_chaine_caracteres(2, "Hardware Address Length", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Hops", "0x" + valeur)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 8
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_dec(valeur)
 		res += tools.constructeur_chaine_caracteres(2, "Transaction Identifier", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 10
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_dec(valeur) + " seconds"
 		res += tools.constructeur_chaine_caracteres(2, "Seconds", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -393,42 +483,60 @@ def analyse_DHCP(Liste):
 		res += tools.constructeur_chaine_caracteres(3, "Boardcast Flags", "0x" + boardcast_flag, boardcast_interpretation)
 		reserve_flag = valeur[1:]
 		res += tools.constructeur_chaine_caracteres(3, "Reserved Flags", "0x" + reserve_flag)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 16
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Client IP Adress", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 20
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Your IP Adress", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 24
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = ".".join([str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]])
 		res += tools.constructeur_chaine_caracteres(2, "Server IP Adress", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 28
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		interpretation = tools.liste_hex_2_IP(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Gateway IP Adress", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 44
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_debut + longueur_hardware):
 		valeur = "".join(Liste[position_debut:position_debut + longueur_hardware])
 		interpretation = tools.liste_hex_2_MAC(Liste[position_debut: position_debut + longueur_hardware])
 		res += tools.constructeur_chaine_caracteres(2, "Client Hardware Adress", "0x" + valeur, interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 108
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -438,7 +546,10 @@ def analyse_DHCP(Liste):
 		else:
 			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Server Host Name", interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 236
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -448,13 +559,19 @@ def analyse_DHCP(Liste):
 		else:
 			interpretation = tools.liste_hex_2_ASCII(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Boot File Name", interpretation)
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 240
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		valeur = "".join(Liste[position_debut:position_fin])
 		res += tools.constructeur_chaine_caracteres(2, "Magic cookie", "Magic cookie")
-	
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = 241
 	
@@ -484,6 +601,10 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
+					else :
+						res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+						return res
+		
 				# On passe au prochain label
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
@@ -503,6 +624,10 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
+			else :
+				res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+				return res
+		
 		# On passe au prochain label
 		position_debut = position_fin
 		position_fin = position_debut + 1
@@ -510,26 +635,57 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 		if int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])) != 0:
 			name +="."
 		label += 1
+	if name == "":
+		name ="<Root>"
+		position_debut += 1
+		ret = opt(Liste, position_debut,position_fin)
+		position_debut=ret[1]
+		position_fin=ret[2]
+		res+=ret[0]
+		return res, position_debut, position_fin
 	lenght=len(name)-1
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Type = tools.constructeur_chaine_caracteres(0, "Type","0x" +"".join(Liste[position_debut:position_fin]),str(tools.dico_type_dns_typen.get(str(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))))
 		Typen = str(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1]))
 		Typeall = str(tools.dico_type_dns_typen.get(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
+
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Class = "0x" +"".join(Liste[position_debut:position_fin])
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		ttl = str(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))) + " (" + tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))+")"
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		dl = int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	head = ""
 	ret = ["", 0, 0]
+	if Typen == "NS":
+		cname=""
+		ret =cnamef(Liste, position_debut,position_fin,cname)
+		position_debut=ret[1]
+		position_fin=ret[2]
+		head = "ns"	
 	if Typen == "CNAME":
 		cname=""
 		ret =cnamef(Liste, position_debut,position_fin,cname)
@@ -546,7 +702,15 @@ def DNS_Answer(Liste, nombre, position_debut,position_fin, res):
 		position_debut=ret[1]
 		position_fin=ret[2]
 		head="addr"
-
+	if Typen == "MX":
+		position_debut = position_fin
+		position_fin = position_debut + 2
+		if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+			res += tools.constructeur_chaine_caracteres(4, "Preference", int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))
+		ret = cnamef(Liste, position_debut,position_fin)
+		position_debut=ret[1]
+		position_fin=ret[2]
+		head="mxname"
 	res += tools.constructeur_chaine_caracteres(3, name , " type "+ Typen + ", class IN" + ", "+head+" "+ret[0])
 	res += tools.constructeur_chaine_caracteres(4, "Name" , name)
 	res += tools.constructeur_chaine_caracteres(4, "Type" , Typen, Typeall)
@@ -576,6 +740,10 @@ def cnamef(Liste, position_debut,position_fin, res):
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
+					else :
+						res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+						return res
+		
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
 	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
@@ -591,6 +759,10 @@ def cnamef(Liste, position_debut,position_fin, res):
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
+			else :
+				res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+				return res
+		
 		position_debutt = position_fin
 		position_fint = position_debutt + 1
 	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou pas
@@ -623,6 +795,10 @@ def mnamef(Liste, position_debut,position_fin, res):
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
+					else :
+						res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+						return res
+		
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
 	# On vérifie si c'est le dernier label qui a été écrit pour mettre '.' ou ':'
@@ -638,6 +814,10 @@ def mnamef(Liste, position_debut,position_fin, res):
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
+			else :
+				res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+				return res
+		
 		#position_debut = position_fin
 		#position_fin = position_debut + 1
 		position_debutt = position_fin
@@ -658,6 +838,10 @@ def adresse(Liste, position_debut,position_fin):
 	ip = [str(int(hex, base = 16)) for hex in Liste[position_debut:position_fin]]
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res +=  ".".join(ip)
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	return res, position_debut,position_fin
 
 def adresse6(Liste, position_debut,position_fin):
@@ -669,8 +853,62 @@ def adresse6(Liste, position_debut,position_fin):
 			res +=  Liste[position_debut:position_fin][0] + Liste[position_debut:position_fin][1]
 			if i != 7:
 				res+=":"
+		else :
+			res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+			return res
+		
 	return res, position_debut,position_fin
 
+def opt(Liste, position_debut,position_fin):
+	res=""
+	position_fin = position_debut + 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res +=  tools.constructeur_chaine_caracteres(4, "Type", tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1]), tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+	
+	position_debut = position_fin
+	position_fin = position_debut + 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res+= tools.constructeur_chaine_caracteres(4,"UDP payload size",tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res		
+	
+	position_debut = position_fin
+	position_fin = position_debut + 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res+= tools.constructeur_chaine_caracteres(4,"Higher bits in extended RCODE","0x" + str(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res	
+
+	position_debut = position_fin
+	position_fin = position_debut + 1
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res+= tools.constructeur_chaine_caracteres(4,"ENDSO ersion",tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res	
+
+	position_debut = position_fin
+	position_fin = position_debut + 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res+= tools.constructeur_chaine_caracteres(4,"Z","0x" + str(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res	
+
+	position_debut = position_fin
+	position_fin = position_debut + 2
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
+		res+= tools.constructeur_chaine_caracteres(4,"Data lenght",tools.liste_hex_2_dec(Liste[position_debut:position_fin]))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res	
+
+	return res, position_debut,position_fin
 
 def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	name =''
@@ -694,6 +932,10 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 					fin_aux = debut_aux + 1
 					if tools.verificateur_avant_constructeur(Liste, debut_aux, fin_aux):
 						name +=  bytes.fromhex(str(Liste[debut_aux:fin_aux][0][0])+str(Liste[debut_aux:fin_aux][0][1])).decode('utf-8')
+					else :
+						res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+						return res
+		
 				# On passe au prochain label
 				debut_aux = fin_aux
 				fin_aux = debut_aux + 1
@@ -713,6 +955,10 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 			position_fin = position_debut + 1
 			if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 				name +=  bytes.fromhex(str(Liste[position_debut:position_fin][0][0])+str(Liste[position_debut:position_fin][0][1])).decode('utf-8')
+			else :
+				res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+				return res
+		
 		# On passe au prochain label
 		position_debut = position_fin
 		position_fin = position_debut + 1
@@ -726,14 +972,26 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 		Type = tools.constructeur_chaine_caracteres(0, "Type","0x" +"".join(Liste[position_debut:position_fin]),str(tools.dico_type_dns_typen.get(str(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))))
 		Typen = str(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1]))
 		Typeall = str(tools.dico_type_dns_typen.get(tools.dico_type_dns_type.get(Liste[position_debut:position_fin][1])))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		Class = "0x" +"".join(Liste[position_debut:position_fin])
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		ttl = str(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))) + " (" + tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))+")"
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	position_debut = position_fin
 	position_fin = position_debut + 2
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -743,6 +1001,10 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	ret1 =cnamef(Liste, position_debut,position_fin,cname)
 	position_debut=ret1[1]
 	position_fin=ret1[2]
+	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin)==False :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+			
 	cname=""
 	position_fin = position_fin + 1
 	ret2 =mnamef(Liste, position_debut,position_fin,cname)
@@ -760,22 +1022,42 @@ def DNS_Authoritative(Liste, nombre, position_debut,position_fin, res):
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Serial Number",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Refresh Interval",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Retry Interval",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Expire Limit",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	position_debut = position_fin
 	position_fin = position_debut + 4
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
 		res += tools.constructeur_chaine_caracteres(4, "Minimum TTL",int(tools.liste_hex_2_dec(Liste[position_debut:position_fin])),tools.sec_to_hours(int(tools.liste_hex_2_dec(Liste[position_debut:position_fin]))))
+	else :
+		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
+		return res
+		
 	return res, position_debut, position_fin
 
 def analyse_DHCP_option(Liste):
