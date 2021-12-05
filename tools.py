@@ -271,6 +271,7 @@ def liste_brute_2_liste(liste_brute):
 							trame_courante.append("-2")
 						liste_res.append(trame_courante)
 						ignorer_ligne = True
+						continue
 
 				# on supprime des elements qui ne sont pas attendu par l'offset
 				while(len(trame_courante) > offset_en_hex):
@@ -295,20 +296,6 @@ def liste_brute_2_liste(liste_brute):
 						ignorer_element = True
 						if(len(element_courant) == 2):
 							octet_invalide = True
-
-					
-				# # pour la derniere ligne
-				# if indice_ligne == len(liste_brute) - 1:
-				# 	for indice_element in range(1, len(liste_brute[indice_ligne])):
-				# 		element_courant = liste_brute[indice_ligne][indice_element]
-				# 		if octet_valide(element_courant) and not ignorer_element:
-				# 			print(element_courant, "mark2")
-				# 			trame_courante.append(element_courant.lower())
-				# 		elif not octet_valide(element_courant): 
-				# 			point_darret = len(trame_courante)
-				# 			ignorer_element = True
-				# 			if(len(element_courant) == 2):
-				# 				octet_invalide = True
 
 				# derniere ligne du ficher, sans verification avec offset
 				if indice_ligne == len(liste_brute)-1:
