@@ -111,7 +111,7 @@ dico_type_dhcp = {
 	"08" : "Inform",
 }
 
-# des listes pour optimiser la clause condition
+# des listes pour simplifier la clause condition
 dhcp_option_liste_sans_data = ["00", "ff"]
 dhcp_option_liste_interpretation_dico = ["35", "74", ]
 dhcp_option_liste_interpretation_IP = ["01", "03", "06", "32", "36", ]

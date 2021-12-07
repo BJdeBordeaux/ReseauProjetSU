@@ -855,7 +855,9 @@ def adresse6(Liste, position_debut,position_fin):
 		else :
 			res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
 			return res
-		
+					# if(len(Liste[position_debut:]) <= 2): 
+			# 	res += "Format DHCP option non valide a partir de l'octet "+ str(position_debut) + " dans l'option (" + Liste[position_debut] + ")." +"Interruption d'analyse.\n"
+			# 	break
 	return res, position_debut,position_fin
 
 def opt(Liste, position_debut,position_fin):
@@ -1084,9 +1086,9 @@ def analyse_DHCP_option(Liste):
 			interpretation = "option non connue" if tag_option not in tools.dico_option_dhcp else tools.dico_option_dhcp.get(tag_option)
 			
 			# en cas de format non valide
-			if(len(Liste[position_debut:]) <= 2): 
-				res += "Format DHCP option non valide a partir de l'octet "+ str(position_debut) + " dans l'option (" + Liste[position_debut] + ")." +"Interruption d'analyse.\n"
-				break
+			# if(len(Liste[position_debut:]) <= 2): 
+			# 	res += "Format DHCP option non valide a partir de l'octet "+ str(position_debut) + " dans l'option (" + Liste[position_debut] + ")." +"Interruption d'analyse.\n"
+			# 	break
 			
 			# DHCP option : type, longueur, valeur
 			longueur_data = Liste[position_debut+1]
