@@ -305,10 +305,10 @@ def liste_brute_2_liste(liste_brute):
 	return liste_res
 
 def constructeur_chaine_caracteres(indentation, champs, valeur, interpretation = ""):
-	"""
+	"""DHCP option
 	int * str * str (* str) -> str
 	Construire des information pour afficher
-	suivant le format ci-dessous:
+	suivant le format ci-dessous:DHCP option
 
 	(indentation) champs: valeur (interpretation)\n
 			Type : 0800 (IPv4)

@@ -19,7 +19,7 @@ def analyse_ethernet(Liste):
 		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
 		return res
 
-# Lecture de l'adresse Mac Source	
+	# Lecture de l'adresse Mac Source	
 	position_debut = position_fin
 	position_fin = 12
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):
@@ -28,7 +28,7 @@ def analyse_ethernet(Liste):
 		res += tools.constructeur_chaine_caracteres(0, "\n Erreur dans la trame", "Arrêt de l'analyse", "Trame trop courte")
 		return res
 
-# Lecture du type de protocole	
+	# Lecture du type de protocole	
 	position_debut = position_fin
 	position_fin = 14
 	if tools.verificateur_avant_constructeur(Liste, position_debut, position_fin):

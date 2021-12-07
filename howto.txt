@@ -11,7 +11,6 @@ Pour changer de fichier source de la trame ou destination de la trame,
 
     Or, des commandes peuvent servir pour la démonstration:
     make all
-    make test
     make ipo (pour une trame avec ip option)
     make dns
     make dhcp
