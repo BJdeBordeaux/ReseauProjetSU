@@ -1,4 +1,3 @@
-from os import error, posix_fadvise
 import tools
 
 def analyse_ethernet(Liste):
